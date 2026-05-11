@@ -1,0 +1,26 @@
+# ──────────────────────────────────────────────────────────────
+# Obsidian vault (docs/) — arquivos locais/pessoais
+# ──────────────────────────────────────────────────────────────
+# Layout da janela e workspaces presets mudam por pessoa/sessão,
+# causando conflito em quase todo push se forem commitados.
+docs/.obsidian/workspace.json
+docs/.obsidian/workspace-mobile.json
+docs/.obsidian/workspaces.json
+
+# Cache local do Obsidian (regenerado automaticamente).
+docs/.obsidian/cache/
+docs/.obsidian/file-recovery/
+
+# Salvaguarda: se alguém abrir docs/.obsidian/ como vault por
+# engano no Obsidian, ele cria um vault aninhado dentro dele.
+docs/.obsidian/.obsidian/
+
+# ──────────────────────────────────────────────────────────────
+# OS / editores
+# ──────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/
