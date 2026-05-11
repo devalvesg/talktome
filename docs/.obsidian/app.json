@@ -1,0 +1,12 @@
+{
+  "showInlineTitle": true,
+  "alwaysUpdateLinks": true,
+  "useMarkdownLinks": false,
+  "newLinkFormat": "shortest",
+  "promptDelete": true,
+  "showLineNumber": true,
+  "showFrontmatter": true,
+  "attachmentFolderPath": "anexos",
+  "defaultViewMode": "source",
+  "livePreview": true
+}
