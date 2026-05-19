@@ -110,6 +110,7 @@ Esta nota é o **mapa de conteúdo (MOC)** do projeto — o ponto de entrada par
 - [[Reconhecimento de LIBRAS]] — modelo, dataset, pipeline em tempo real
 - [[Dataset]] — coleta, anotação, limitações
 - [[Validação]] — métricas, pesquisa de campo, usabilidade
+- [[Plano de Desenvolvimento]] — roadmap de engenharia, marcos (M0→M7) e fluxo dos dois devs
 - [[Cronograma]] — entregas e marcos
 - [[Referências]] — bibliografia e links externos
 
