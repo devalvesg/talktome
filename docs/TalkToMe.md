@@ -85,12 +85,27 @@ Uma webcam captura os sinais do cliente, um **modelo de visão computacional rec
 
 ## Como o vault está organizado
 
-Esta nota é o **mapa de conteúdo (MOC)** do projeto — o ponto de entrada para tudo o que vamos documentar. Os arquivos abaixo serão criados conforme o projeto avança:
+Esta nota é o **mapa de conteúdo (MOC)** do projeto — o ponto de entrada para tudo o que vamos documentar. Os arquivos abaixo já existem ou serão criados conforme o projeto avança:
+
+### Produto e telas
+
+- [[Funcionamento da Aplicação]] — visão geral, fluxo entre atendente e cliente, estados de sessão
+- [[Landing Page]] — vitrine institucional e comercial do Talk2Me
+- [[Home do Sistema]] — tela inicial operacional do atendente
+- [[Interface do Atendente]] — painel durante o atendimento, ações rápidas, texto livre
+- [[Interface do Cliente]] — interface acessível com avatar em LIBRAS, câmera e respostas rápidas
+- [[Design System]] — paleta, tipografia, tokens e componentes (fonte de verdade do frontend)
+
+> [!info] Design System v1.0 — apenas referência visual
+> O pacote em `docs/design-system-bundle/` é **especificação visual e comportamental**, não código a reusar. O time escreverá seu próprio frontend do zero, replicando o resultado visual do protótipo — não a estrutura interna dele.
+> Fonte original: [Talk2Me Screens (Claude Design)](https://api.anthropic.com/v1/design/h/vDdDi4DEuaN5tMM-o5u70g?open_file=Talk2Me+Screens.html).
+> **Toda mudança visual deve consultar o [[Design System]] antes.**
+
+### Pesquisa e técnica
 
 - [[Visão Geral]] — escopo, premissas e delimitações
 - [[Referencial Teórico]] — LIBRAS, visão computacional, trabalhos relacionados
 - [[Arquitetura]] — stack, decisões técnicas, fluxos
-- [[Interface do Atendente]] — frases pré-prontas e UX do balcão
 - [[Avatar 3D em LIBRAS]] — VLibras, animações, integração web
 - [[Reconhecimento de LIBRAS]] — modelo, dataset, pipeline em tempo real
 - [[Dataset]] — coleta, anotação, limitações
