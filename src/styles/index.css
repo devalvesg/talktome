@@ -1,0 +1,124 @@
+@import 'tailwindcss';
+@import './tokens.css';
+
+/* ──────────────────────────────────────────────────────────────────────────
+ * Mapeia os tokens --t2m-* (contrato do DS) para o tema do Tailwind v4.
+ * Assim `bg-brand`, `text-ink`, `rounded-lg`, `shadow-md` etc. resolvem para
+ * as mesmas variáveis. Nenhum valor é duplicado: tudo aponta p/ tokens.css.
+ * ────────────────────────────────────────────────────────────────────────── */
+@theme {
+  /* Cores · brand */
+  --color-brand: var(--t2m-primary);
+  --color-brand-50: var(--t2m-primary-50);
+  --color-brand-100: var(--t2m-primary-100);
+  --color-brand-200: var(--t2m-primary-200);
+  --color-brand-300: var(--t2m-primary-300);
+  --color-brand-400: var(--t2m-primary-400);
+  --color-brand-500: var(--t2m-primary-500);
+  --color-brand-600: var(--t2m-primary-600);
+  --color-brand-700: var(--t2m-primary-700);
+  --color-brand-800: var(--t2m-primary-800);
+  --color-brand-900: var(--t2m-primary-900);
+
+  /* Cores · acento teal */
+  --color-accent: var(--t2m-secondary);
+  --color-accent-50: var(--t2m-secondary-50);
+  --color-accent-100: var(--t2m-secondary-100);
+  --color-accent-600: var(--t2m-secondary-600);
+  --color-accent-700: var(--t2m-secondary-700);
+  --color-accent-light: var(--t2m-secondary-light);
+
+  /* Cores · superfícies e fundo */
+  --color-bg: var(--t2m-bg);
+  --color-muted: var(--t2m-muted);
+  --color-inverse: var(--t2m-inverse);
+  --color-surface: var(--t2m-surface);
+  --color-subdued: var(--t2m-subdued);
+
+  /* Cores · texto */
+  --color-ink: var(--t2m-text);
+  --color-ink-2: var(--t2m-text-2);
+  --color-ink-3: var(--t2m-text-3);
+  --color-ink-inv: var(--t2m-text-inv);
+  --color-link: var(--t2m-text-link);
+
+  /* Cores · borda */
+  --color-line: var(--t2m-border);
+  --color-line-strong: var(--t2m-border-strong);
+  --color-line-subtle: var(--t2m-border-subtle);
+
+  /* Cores · feedback */
+  --color-success: var(--t2m-success);
+  --color-success-bg: var(--t2m-success-bg);
+  --color-warning: var(--t2m-warning);
+  --color-warning-bg: var(--t2m-warning-bg);
+  --color-error: var(--t2m-error);
+  --color-error-bg: var(--t2m-error-bg);
+  --color-info: var(--t2m-info);
+  --color-info-bg: var(--t2m-info-bg);
+
+  /* Tipografia */
+  --font-head: var(--t2m-head);
+  --font-body: var(--t2m-body);
+  --font-mono: var(--t2m-mono);
+
+  /* Raio */
+  --radius-sm: var(--t2m-radius-sm);
+  --radius-md: var(--t2m-radius-md);
+  --radius-lg: var(--t2m-radius-lg);
+  --radius-xl: var(--t2m-radius-xl);
+
+  /* Sombra */
+  --shadow-sm: var(--t2m-shadow-sm);
+  --shadow-md: var(--t2m-shadow-md);
+  --shadow-lg: var(--t2m-shadow-lg);
+
+  /* Easing */
+  --ease-default: var(--t2m-easing-default);
+  --ease-emphasized: var(--t2m-easing-emphasized);
+}
+
+/* ── Base ─────────────────────────────────────────────────────────────── */
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100dvh;
+    font-family: var(--t2m-body);
+    background-color: var(--t2m-bg);
+    color: var(--t2m-text);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--t2m-head);
+    line-height: 1.2;
+  }
+
+  /* Foco visível em todo elemento focável (WCAG 2.2 AA) */
+  :focus-visible {
+    outline: 2px solid var(--t2m-state-focus);
+    outline-offset: 2px;
+    border-radius: var(--t2m-radius-sm);
+  }
+}
+
+/* ── Acessibilidade · prefers-reduced-motion ──────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -1,0 +1,98 @@
+/* ──────────────────────────────────────────────────────────────────────────
+ * Talk2Me · Design Tokens (--t2m-*)
+ * Fonte da verdade visual: docs/design-system-bundle/ + docs/Design System.md
+ * Replicado valor por valor. Tipografia: Tweak 3 · Humano.
+ *
+ * REGRA: estes tokens são o contrato do DS. Telas e componentes consomem
+ * estas variáveis (direto ou via utilitários Tailwind mapeados em index.css).
+ * Mudança aqui exige aviso no Quadro de Alocação (DS congelado após M1).
+ * ────────────────────────────────────────────────────────────────────────── */
+
+:root {
+  /* ── Brand · Midnight Blue ──────────────────────────────────────────── */
+  --t2m-primary: #191970;
+  --t2m-primary-50: #eeeef7;
+  --t2m-primary-100: #d6d6ec;
+  --t2m-primary-200: #adadd9;
+  --t2m-primary-300: #7a7ac2;
+  --t2m-primary-400: #4a4aab;
+  --t2m-primary-500: #2e2e8c;
+  --t2m-primary-600: #191970;
+  --t2m-primary-700: #13135a;
+  --t2m-primary-800: #0d0d42;
+  --t2m-primary-900: #08082b;
+
+  /* ── Brand · Teal (acento) ──────────────────────────────────────────── */
+  --t2m-secondary: #0e9a8d;
+  --t2m-secondary-50: #e6f7f5;
+  --t2m-secondary-100: #b8e7e2;
+  --t2m-secondary-500: #0e9a8d;
+  --t2m-secondary-600: #0a7d72;
+  --t2m-secondary-700: #076058;
+  --t2m-secondary-light: #33d6c6; /* acento claro p/ fundos escuros */
+
+  /* ── Background & Surface ───────────────────────────────────────────── */
+  --t2m-bg: #fafbfc;
+  --t2m-muted: #eceff1;
+  --t2m-inverse: #0a0a2d;
+  --t2m-surface: #ffffff;
+  --t2m-surface-elevated: #ffffff;
+  --t2m-subdued: #f5f7f8;
+
+  /* ── Text ───────────────────────────────────────────────────────────── */
+  --t2m-text: #0f1729;
+  --t2m-text-2: #4a5763;
+  --t2m-text-3: #7a8794;
+  --t2m-text-inv: #ffffff;
+  --t2m-text-brand: #191970;
+  --t2m-text-link: #13135a;
+
+  /* ── Border ─────────────────────────────────────────────────────────── */
+  --t2m-border: #cfd8dc;
+  --t2m-border-strong: #90a4ae;
+  --t2m-border-subtle: #e4e9ec;
+  --t2m-border-brand: #191970;
+
+  /* ── Feedback ───────────────────────────────────────────────────────── */
+  --t2m-success: #1e7a53;
+  --t2m-success-bg: #e5f4ec;
+  --t2m-warning: #a8650f;
+  --t2m-warning-bg: #fdf1da;
+  --t2m-error: #b0202f;
+  --t2m-error-bg: #fbe7e9;
+  --t2m-info: #1a5fb4;
+  --t2m-info-bg: #e4eefb;
+
+  /* ── Estados ────────────────────────────────────────────────────────── */
+  --t2m-state-hover: rgba(25, 25, 112, 0.08);
+  --t2m-state-active: rgba(25, 25, 112, 0.16);
+  --t2m-state-focus: #4a4aab;
+  --t2m-state-focus-ring: rgba(74, 74, 171, 0.35);
+  --t2m-state-disabled: #cfd8dc;
+  --t2m-state-disabled-text: #90a4ae;
+
+  /* ── Tipografia · Tweak 3 · Humano ──────────────────────────────────── */
+  --t2m-head: 'Lexend', system-ui, sans-serif;
+  --t2m-body: 'Atkinson Hyperlegible', system-ui, sans-serif;
+  --t2m-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+  /* ── Radius ─────────────────────────────────────────────────────────── */
+  --t2m-radius-sm: 4px;
+  --t2m-radius-md: 8px;
+  --t2m-radius-lg: 12px;
+  --t2m-radius-xl: 20px;
+  --t2m-radius-full: 9999px;
+
+  /* ── Shadow ─────────────────────────────────────────────────────────── */
+  --t2m-shadow-sm: 0 1px 2px rgba(15, 23, 41, 0.08);
+  --t2m-shadow-md: 0 4px 12px rgba(15, 23, 41, 0.1);
+  --t2m-shadow-lg: 0 12px 32px rgba(15, 23, 41, 0.14);
+  --t2m-shadow-focus: 0 0 0 4px rgba(74, 74, 171, 0.35);
+
+  /* ── Motion ─────────────────────────────────────────────────────────── */
+  --t2m-duration-fast: 120ms;
+  --t2m-duration-normal: 220ms;
+  --t2m-duration-slow: 360ms;
+  --t2m-easing-default: cubic-bezier(0.2, 0, 0.2, 1);
+  --t2m-easing-emphasized: cubic-bezier(0.3, 0, 0, 1);
+}

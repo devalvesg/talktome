@@ -24,3 +24,24 @@ Thumbs.db
 *.swo
 .idea/
 .vscode/
+
+# ──────────────────────────────────────────────────────────────
+# App (Vite + React + TS)
+# ──────────────────────────────────────────────────────────────
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# Variáveis de ambiente (segredos / config por máquina)
+.env
+.env.*
+!.env.example
+
+# Logs e cache de build
+logs/
+*.log
+npm-debug.log*
+.eslintcache
+*.tsbuildinfo
+.vercel/
