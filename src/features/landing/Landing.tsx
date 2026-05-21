@@ -17,6 +17,7 @@ import {
   useToast,
   type IconName,
 } from '@/ds/components';
+import { submitDemoRequest } from '@/lib/demoRequests';
 
 const STEPS: { icon: IconName; title: string; desc: string }[] = [
   { icon: 'play', title: 'O atendente inicia a conversa', desc: 'Um toque abre a sessão e conecta os dois dispositivos.' },
@@ -58,13 +59,17 @@ export function Landing() {
     setErrors(next);
     if (Object.keys(next).length) return;
 
+    const message = String(data.get('message') ?? '').trim();
     setSending(true);
-    // M4: gravar em demo_requests. Por ora, simula envio.
-    window.setTimeout(() => {
-      setSending(false);
-      form.reset();
-      toast({ tone: 'success', message: 'Pedido de demonstração enviado! Entraremos em contato.' });
-    }, 600);
+    submitDemoRequest({ name, email, message })
+      .then(() => {
+        form.reset();
+        toast({ tone: 'success', message: 'Pedido de demonstração enviado! Entraremos em contato.' });
+      })
+      .catch(() => {
+        toast({ tone: 'error', message: 'Não foi possível enviar agora. Tente novamente.' });
+      })
+      .finally(() => setSending(false));
   }
 
   return (

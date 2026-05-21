@@ -14,8 +14,8 @@ import { Showcase } from '@/features/showcase/Showcase';
 function App() {
   return (
     <ToastProvider>
-      <SessionChannelProvider>
-        <BrowserRouter>
+      <BrowserRouter>
+        <SessionChannelProvider>
           <Routes>
             <Route path="/" element={<Landing />} />
             <Route path="/home" element={<Home />} />
@@ -23,8 +23,8 @@ function App() {
             <Route path="/cliente" element={<Client />} />
             <Route path="/showcase" element={<Showcase />} />
           </Routes>
-        </BrowserRouter>
-      </SessionChannelProvider>
+        </SessionChannelProvider>
+      </BrowserRouter>
     </ToastProvider>
   );
 }
