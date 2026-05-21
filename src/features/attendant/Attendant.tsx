@@ -1,11 +1,11 @@
 /**
- * Interface do Atendente — painel operacional (desktop/tablet). Tela do M2.
- * Estado MOCADO localmente: clicar uma ação rápida ou enviar texto adiciona
- * ao histórico e simula a resposta do cliente. A sincronização real
- * atendente↔cliente entra no M3 (SessionChannel).
+ * Interface do Atendente — painel operacional (desktop/tablet).
+ * M3: ligado ao canal de sessão. Ações rápidas e texto livre publicam a
+ * `question` + entrada no histórico compartilhado; a resposta do cliente
+ * (de outra aba/dispositivo) chega pelo mesmo canal.
  * Spec: docs/Interface do Atendente.md.
  */
-import { useRef, useState, type FormEvent } from 'react';
+import { useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Btn,
@@ -20,40 +20,32 @@ import {
   type IconName,
 } from '@/ds/components';
 import { TopBar } from '@/app/TopBar';
+import { useSession } from '@/app/SessionChannelProvider';
 import { QUICK_ACTIONS } from '@/session/QUICK_ACTIONS';
-import type { HistoryEntry } from '@/session/types';
 
 const now = () =>
   new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 
-/** Resposta mockada do cliente para uma pergunta (primeira opção). */
-function mockAnswer(actionId: string): string {
-  const a = QUICK_ACTIONS.find((q) => q.id === actionId);
-  return a?.options[0]?.label ?? 'Sim';
-}
+const freeId = () => `free-${Date.now()}`;
 
 export function Attendant() {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [history, setHistory] = useState<HistoryEntry[]>([]);
+  const { state, send, reset } = useSession();
   const [confirmEnd, setConfirmEnd] = useState(false);
-  const timers = useRef<number[]>([]);
 
   function sendQuestion(text: string, actionId?: string) {
-    setHistory((h) => [
-      ...h,
-      { side: 'attendant', text, time: now(), kind: 'ÁUDIO → LIBRAS' },
-    ]);
-    if (actionId) {
-      timers.current.push(
-        window.setTimeout(() => {
-          setHistory((h) => [
-            ...h,
-            { side: 'client', text: mockAnswer(actionId), time: now(), kind: 'LIBRAS → ÁUDIO' },
-          ]);
-        }, 1400),
-      );
-    }
+    const action = actionId ? QUICK_ACTIONS.find((q) => q.id === actionId) : undefined;
+    send({
+      question: action
+        ? { id: action.id, text: action.text, options: action.options }
+        : { id: freeId(), text, options: [] },
+      clientAnswer: null,
+      history: [
+        ...state.history,
+        { side: 'attendant', text, time: now(), kind: 'ÁUDIO → LIBRAS' },
+      ],
+    });
   }
 
   function onFreeText(e: FormEvent<HTMLFormElement>) {
@@ -65,6 +57,13 @@ export function Attendant() {
     input.value = '';
     toast({ tone: 'info', message: 'Mensagem enviada ao avatar.' });
   }
+
+  function endSession() {
+    reset();
+    navigate('/');
+  }
+
+  const lastClient = [...state.history].reverse().find((h) => h.side === 'client');
 
   return (
     <div className="flex min-h-dvh flex-col bg-bg">
@@ -84,8 +83,12 @@ export function Attendant() {
       <main className="mx-auto grid w-full max-w-7xl flex-1 gap-5 p-5 lg:grid-cols-[1fr_340px]">
         {/* Coluna principal */}
         <div className="flex flex-col gap-5">
-          <Transcription meta="PT-BR · 98%">
-            Onde fica o setor de <mark>açougue</mark>?
+          <Transcription active={state.clientRecording} meta={state.clientRecording ? 'Recebendo…' : 'PT-BR · 98%'}>
+            {state.clientRecording
+              ? 'Recebendo LIBRAS…'
+              : lastClient
+                ? lastClient.text
+                : null}
           </Transcription>
 
           {/* Ações rápidas */}
@@ -128,14 +131,14 @@ export function Attendant() {
             <h2 className="font-head text-[15px] font-semibold text-ink">Histórico</h2>
           </div>
           <div className="flex-1 overflow-y-auto p-4">
-            {history.length === 0 ? (
+            {state.history.length === 0 ? (
               <EmptyState
                 icon="list"
                 title="Nenhuma mensagem ainda"
                 description="As perguntas e respostas aparecerão aqui."
               />
             ) : (
-              history.map((h, i) => (
+              state.history.map((h, i) => (
                 <ConversationCard
                   key={i}
                   side={h.side}
@@ -159,7 +162,7 @@ export function Attendant() {
             <Btn variant="ghost" onClick={() => setConfirmEnd(false)}>
               Cancelar
             </Btn>
-            <Btn variant="danger" onClick={() => navigate('/')}>
+            <Btn variant="danger" onClick={endSession}>
               Encerrar
             </Btn>
           </>
