@@ -8,9 +8,9 @@ tags:
   - tela
   - institucional
   - marketing
-status: ideação
+status: implementado
 criado: 2026-05-19
-atualizado: 2026-05-19
+atualizado: 2026-05-20
 artboard: design-system-bundle/project/screen-landing.jsx
 ---
 
@@ -18,6 +18,10 @@ artboard: design-system-bundle/project/screen-landing.jsx
 
 > [!abstract] Em uma frase
 > Página **institucional e comercial** do Talk2Me — explica o produto para supermercados, gestores e equipes de atendimento e converte em pedido de demonstração.
+
+> [!success] Estado de implementação (M2 + M4)
+> Implementada em `src/features/landing/Landing.tsx` (rota `/`). Hero, "como funciona", benefícios, "onde usar", demonstração das telas, CTA e footer prontos. O **formulário de demonstração grava de verdade** em `demo_requests` (Supabase, via `src/lib/demoRequests.ts`) — verificado: insert válido aceito, e-mail malformado bloqueado pela RLS.
+> **Pendente:** aviso de privacidade/LGPD no formulário; janela de VLibras opcional; imagens reais.
 
 > [!info] Artboard de referência
 > Mockup interativo: `docs/design-system-bundle/project/Talk2Me Screens.html` (seção *Landing*, 1280×3960px). Componentes em `screen-landing.jsx`. Todos os tokens visuais vêm do [[Design System]].

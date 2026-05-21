@@ -8,9 +8,9 @@ tags:
   - tela
   - atendente
   - operacional
-status: ideação
+status: implementado
 criado: 2026-05-19
-atualizado: 2026-05-19
+atualizado: 2026-05-20
 artboard: design-system-bundle/project/screen-attendant.jsx
 ---
 
@@ -18,6 +18,10 @@ artboard: design-system-bundle/project/screen-attendant.jsx
 
 > [!abstract] Em uma frase
 > Painel **operacional desktop/tablet-first** usado pelo funcionário do supermercado durante o atendimento — concentra status da sessão, transcrição em tempo real da LIBRAS do cliente, ações rápidas pré-prontas e campo de texto livre.
+
+> [!success] Estado de implementação (M2 + M3)
+> Implementada em `src/features/attendant/Attendant.tsx` (rota `/atendente`). Header com `ConnStatus`/`DeviceIndicator`/Encerrar, `Transcription`, histórico de `ConversationCard`, grid das 8 `QUICK_ACTIONS` e texto livre. Ligada ao canal de sessão (`useSession`): ações e texto publicam `question` + histórico; a resposta do cliente chega pelo mesmo canal em tempo real. Encerrar pede confirmação (modal) e reseta a sessão.
+> **Pendente:** transcrição real (depende do reconhecimento, M6); baixa confiança/“pedir para repetir”; atalhos de teclado (1–9, Esc).
 
 > [!info] Artboard de referência
 > `docs/design-system-bundle/project/Talk2Me Screens.html` (seção *Atendente*, **interativo** — ligado ao cliente pelo event bus `__T2M_BUS`). Componente: `screen-attendant.jsx`. Componentes do DS: `Transcription`, `ConversationCard`, `Btn`, `ConnStatus`, `DeviceIndicator`.
