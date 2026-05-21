@@ -12,7 +12,7 @@ tags:
   - engenharia
 status: ativo
 criado: 2026-05-19
-atualizado: 2026-05-19
+atualizado: 2026-05-20
 ---
 
 # Plano de Desenvolvimento
@@ -24,6 +24,13 @@ atualizado: 2026-05-19
 > - **Marcos são relativos**, não têm data. Cada um só começa quando o *checkpoint de saída* do anterior está fechado (salvo onde indicado como paralelizável).
 > - Cada marco traz **entregáveis**, **checkpoint de saída (DoD)**, **dependências** e uma **sugestão de divisão** entre os dois devs.
 > - Toda decisão visual consulta antes o [[Design System]]; todo fluxo consulta o [[Funcionamento da Aplicação]].
+
+> [!success] Progresso atual (2026-05-20)
+> **M0 → M4 concluídos** e na branch `dev` (repo `github.com/devalvesg/talktome`).
+> - **M0** Fundação · **M1** Design System em código (`/showcase`) · **M2** 4 telas + roteamento · **M3** canal mock + fluxo · **M4** Supabase Realtime + `demo_requests`.
+> - Projeto Supabase **talk2me** provisionado (free tier, sa-east-1); RLS da `demo_requests` verificada.
+> - **Em aberto:** **M5** (PoC do VLibras / avatar — ver [[Avatar 3D em LIBRAS]]), **M6** (reconhecimento, opcional), **M7** (validação WCAG + campo). Deploy no Vercel a conectar (`vercel.json` pronto).
+> - Pequeno desvio do plano: o Supabase foi provisionado já no início (não no M4) por conveniência. Veja o estado de cada tela nas notas [[Landing Page]] · [[Home do Sistema]] · [[Interface do Atendente]] · [[Interface do Cliente]].
 
 ## 1. Princípios do plano
 
@@ -276,14 +283,17 @@ Exemplo: `feat(client): adiciona LibrasViewer com legenda e botão repetir`
 
 | Módulo / área | Dono atual | Status | Marco |
 | ------------- | ---------- | ------ | ----- |
-| `infra` (config, tokens, deploy) | — | ✅ livre | M0 |
-| `ds/` (congelado após M1) | — | ✅ livre | M1 |
-| `session/` (contrato — congelado) | — | ✅ livre | M1/M3 |
-| `features/landing/` | — | ✅ livre | M2 |
-| `features/home/` | — | ✅ livre | M2 |
-| `features/attendant/` | — | ✅ livre | M2 |
-| `features/client/` | — | ✅ livre | M2 |
-| PoC VLibras (spike) | — | ✅ livre | paralelo |
+| `infra` (config, tokens, deploy) | — | ✅ concluído (deploy a conectar) | M0 |
+| `ds/` (congelado após M1) | — | ✅ concluído · 🔒 congelado | M1 |
+| `session/` (contrato + Mock + Supabase) | — | ✅ concluído · 🔒 congelado | M1/M3/M4 |
+| `features/landing/` | — | ✅ concluído (M2) + form M4 | M2 |
+| `features/home/` | — | ✅ concluído | M2 |
+| `features/attendant/` | — | ✅ concluído | M2 |
+| `features/client/` | — | ✅ concluído | M2 |
+| `demo_requests` (schema + RLS) | — | ✅ concluído | M4 |
+| PoC VLibras (spike) | — | ⏳ pendente | paralelo / M5 |
+| Reconhecimento de LIBRAS | — | ⏳ pendente (opcional) | M6 |
+| Validação WCAG + campo | — | ⏳ pendente | M7 |
 
 ## 7. Spike paralela: PoC do VLibras
 

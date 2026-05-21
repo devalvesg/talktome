@@ -13,7 +13,7 @@ tags:
   - supabase
 status: ativo
 criado: 2026-05-19
-atualizado: 2026-05-19
+atualizado: 2026-05-20
 ---
 
 # Segurança
@@ -25,6 +25,10 @@ atualizado: 2026-05-19
 > - **Sem autenticação de usuário** e **sem dados pessoais persistidos** — o histórico vive na sessão do navegador e é descartado ao fechar a aba (ver [[Plano de Desenvolvimento]]).
 > - O **único dado persistido** é o formulário "Solicitar demonstração" da [[Landing Page]] (`demo_requests`).
 > - A **câmera** do cliente (frente 2) capta sinais — é o ativo mais sensível, ainda que o vídeo não precise sair do dispositivo.
+
+> [!success] Estado de implementação (M4 · 2026-05-20)
+> **Feito:** RLS ligada em `demo_requests` (só `INSERT` anônimo, com validação de formato no servidor; sem `SELECT`/`UPDATE`/`DELETE` — *advisors* de segurança limpos); chaves só no `.env.local` (ignorado pelo git) com `.env.example` versionado; canal real via Supabase Realtime (`wss://`).
+> **Pendente (hardening):** hoje o canal usa diretamente o **código curto** (`t2m:T2M-XXXX`) como nome — falta o **token de alta entropia** com o código curto sendo só um apelido de vida curta (ver §[[#2 Isolamento de sessão]]); login anônimo + private channels (§3); sanitização do texto livre (§4); cabeçalhos de segurança no host; aviso de privacidade/LGPD na Landing.
 
 ## Princípios
 
@@ -76,8 +80,8 @@ Cada atendimento é uma **sala/canal própria**. Um dispositivo só deve receber
 > - **`anon` / publishable key** → pode ir no frontend (é pública por design).
 > - **`service_role` key** → **NUNCA** no frontend, nunca no repositório. Ela ignora RLS e dá acesso total. Só em ambiente de servidor/CI, via variável de ambiente.
 
-- Chaves em **`.env`** (`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`); `.env` no `.gitignore`.
-- Versionar apenas um **`.env.example`** sem valores reais.
+- Chaves em **`.env.local`** (`VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY` — a *publishable key* moderna, pública por design); `.env*` no `.gitignore` (exceto `.env.example`).
+- Versionar apenas um **`.env.example`** sem segredos.
 
 ## Banco de dados (`demo_requests`)
 
@@ -116,15 +120,15 @@ Mesmo com pouco dado, vale registrar para o artigo:
 
 ## Checklist de segurança (parte do *Definição de Pronto*)
 
-- [ ] Toda conexão usa `wss://` / HTTPS (sem `ws://` ou `http://`).
-- [ ] ID real da sessão é token de alta entropia; código curto expira após pareamento.
-- [ ] Sessão expira por inatividade e é invalidada ao encerrar.
-- [ ] `service_role` **não** aparece em nenhum lugar do frontend/repo; `.env` ignorado pelo git.
-- [ ] RLS ligada em `demo_requests` (somente `INSERT` anônimo).
-- [ ] Câmera: permissão explícita, processamento local, sem gravação, indicador visível.
+- [x] Toda conexão usa `wss://` / HTTPS (Supabase Realtime usa `wss://`; deploy HTTPS ao conectar o host).
+- [ ] ID real da sessão é token de alta entropia; código curto expira após pareamento. *(hoje o canal usa o código curto direto)*
+- [ ] Sessão expira por inatividade e é invalidada ao encerrar. *(encerrar reseta o estado; falta TTL/invalidação do canal)*
+- [x] `service_role` **não** aparece em nenhum lugar do frontend/repo; `.env*` ignorado pelo git.
+- [x] RLS ligada em `demo_requests` (somente `INSERT` anônimo, validado).
+- [ ] Câmera: permissão explícita, processamento local, sem gravação, indicador visível. *(`getUserMedia` real entra no M5/M6; indicador `DeviceIndicator` já existe)*
 - [ ] Texto livre tratado como entrada não-confiável (sanitizado/limitado).
-- [ ] Sem logs de conteúdo de conversa em produção.
-- [ ] `npm audit` sem vulnerabilidades altas/críticas conhecidas.
+- [x] Sem logs de conteúdo de conversa em produção.
+- [x] `npm audit` sem vulnerabilidades altas/críticas conhecidas. *(0 vulnerabilidades na instalação)*
 
 ## Notas relacionadas
 
