@@ -14,7 +14,7 @@ tags:
   - frente-1
 status: pesquisa
 criado: 2026-05-19
-atualizado: 2026-05-19
+atualizado: 2026-05-20
 ---
 
 # Avatar 3D em LIBRAS
@@ -24,6 +24,9 @@ atualizado: 2026-05-19
 
 > [!info] Onde isso vive no produto
 > O avatar aparece no componente `LibrasViewer` da [[Interface do Cliente]]. A entrada vem do atendente via `QUICK_ACTIONS` ou texto livre (ver [[Funcionamento da Aplicação#Atendente → Cliente avatar em LIBRAS]]). Implementação prevista para o **M5** do [[Plano de Desenvolvimento]].
+
+> [!todo] Estado atual (2026-05-20) — PoC ainda não iniciada
+> O `LibrasViewer` já existe como **casca/placeholder** em código (`src/ds/components/product/LibrasViewer.tsx`): figura estilizada estática, pills `AVATAR · LIBRAS` / `SINALIZANDO` e legenda — já recebe a `question` do canal e exibe a legenda. **Falta a PoC do VLibras** (decisão go/no-go abaixo) e a integração do motor real (ou plano B). Nada disso bloqueia M1–M4, que usam o placeholder.
 
 ## Por que uma PoC antes de adotar
 
