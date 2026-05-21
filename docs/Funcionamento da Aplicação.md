@@ -9,9 +9,9 @@ tags:
   - libras
   - acessibilidade
   - fluxo
-status: ideação
+status: implementado
 criado: 2026-05-19
-atualizado: 2026-05-19
+atualizado: 2026-05-20
 ---
 
 # Funcionamento da Aplicação
@@ -22,6 +22,14 @@ atualizado: 2026-05-19
 > [!info] Referências de frontend
 > Todas as decisões visuais aqui derivam do [[Design System]] (DS v1.0, `docs/design-system-bundle/`). Os artboards canônicos das telas estão em `design-system-bundle/project/Talk2Me Screens.html`.
 
+> [!success] Estado de implementação (M3 + M4)
+> O fluxo está implementado atrás da interface `SessionChannel` (`src/session/types.ts`). O `window.__T2M_BUS` do protótipo virou:
+> - **`MockChannel`** (`src/session/MockChannel.ts`) — sincroniza entre abas via `BroadcastChannel` (dev local).
+> - **`SupabaseChannel`** (`src/session/SupabaseChannel.ts`) — sincroniza entre dispositivos via Supabase Realtime.
+> - **`SessionChannelProvider`** (`src/app/`) escolhe qual usar (Supabase quando há `?s=CODE` na URL) — a troca é de uma linha. Telas consomem só `useSession()`.
+>
+> O estado compartilhado abaixo corresponde a `SessionState`. **Pendente:** `librasText`/transcrição real (M6) e presence para estados de conexão.
+
 ## Visão geral
 
 Aplicação web de acessibilidade voltada ao **atendimento ao público em supermercados** — caixas, balcões de informação e SAC. Remove a barreira de comunicação entre **atendentes ouvintes** (sem fluência em LIBRAS) e **clientes com deficiência auditiva**, sem depender de intérprete humano e sem exigir treinamento prévio da equipe.
@@ -29,7 +37,7 @@ Aplicação web de acessibilidade voltada ao **atendimento ao público em superm
 ## Topologia: dois dispositivos, uma sessão
 
 > [!info] Cada atendimento envolve duas telas
-> Ambas conectadas à mesma sessão por um **event bus síncrono** (no protótipo, `window.__T2M_BUS`; no produto, um canal WebSocket/WebRTC).
+> Ambas conectadas à mesma sessão por um **canal síncrono** atrás da interface `SessionChannel` — `MockChannel` (BroadcastChannel) em dev e `SupabaseChannel` (Supabase Realtime, `wss://`) entre dispositivos.
 
 ### Dispositivo do atendente
 

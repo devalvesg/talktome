@@ -9,7 +9,7 @@ tags:
   - tcc
   - libras
   - acessibilidade
-status: ideação
+status: em-desenvolvimento
 criado: 2026-05-11
 autores:
   - Gabriel Alves Damasceno
@@ -23,6 +23,10 @@ curso: Engenharia de Software
 
 > [!abstract] Em uma frase
 > O **TalkToMe** é um software web que facilita a comunicação entre atendentes ouvintes e clientes com deficiência auditiva em ambientes de atendimento ao público — começando pelos supermercados — combinando avatar 3D em LIBRAS e, quando viável, reconhecimento de sinais em tempo real por visão computacional.
+
+> [!success] Estado do desenvolvimento (2026-05-20)
+> Protótipo funcional **M0 → M4** na branch `dev` (`github.com/devalvesg/talktome`): fundação, [[Design System]] em código, as 4 telas, fluxo síncrono atendente↔cliente e backend Supabase (Realtime + `demo_requests`). Detalhes e próximos passos no [[Plano de Desenvolvimento#Progresso atual (2026-05-20)]].
+> **Frente 1** (avatar em LIBRAS) pendente da PoC do VLibras → [[Avatar 3D em LIBRAS]] (M5). **Frente 2** (reconhecimento) é opcional (M6). Validação no M7.
 
 ## De onde nasce a ideia
 
@@ -111,6 +115,7 @@ Esta nota é o **mapa de conteúdo (MOC)** do projeto — o ponto de entrada par
 - [[Dataset]] — coleta, anotação, limitações
 - [[Validação]] — métricas, pesquisa de campo, usabilidade
 - [[Plano de Desenvolvimento]] — roadmap de engenharia, marcos (M0→M7) e fluxo dos dois devs
+- [[Segurança]] — segurança do canal WebSocket, segredos, privacidade e LGPD
 - [[Cronograma]] — entregas e marcos
 - [[Referências]] — bibliografia e links externos
 

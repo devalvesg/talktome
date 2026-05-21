@@ -10,9 +10,9 @@ tags:
   - cliente
   - acessibilidade
   - libras
-status: ideação
+status: implementado
 criado: 2026-05-19
-atualizado: 2026-05-19
+atualizado: 2026-05-20
 artboard: design-system-bundle/project/screen-client.jsx
 ---
 
@@ -20,6 +20,10 @@ artboard: design-system-bundle/project/screen-client.jsx
 
 > [!abstract] Em uma frase
 > Tela **mobile-first** usada pela pessoa surda durante o atendimento — combina avatar 3D em LIBRAS (`LibrasViewer`), câmera para sinalizar, botões grandes (76–96px) de resposta e textos de apoio simples.
+
+> [!success] Estado de implementação (M2 + M3)
+> Implementada em `src/features/client/Client.tsx` (rota `/cliente`, entra na sessão por `?s=CODE`). `LibrasViewer` (casca, com legenda), botões de resposta **condicionais à `question`** recebida do canal, câmera (preview + borda pulsante ao gravar) e `StartConversionBtn`. Responder publica `clientAnswer` + histórico; gravar publica `clientRecording`.
+> **Pendente (M5/M6):** avatar real no `LibrasViewer` (VLibras ou plano B); câmera/`getUserMedia` real; reconhecimento e falha graciosa por baixa confiança.
 
 > [!info] Artboard de referência
 > `docs/design-system-bundle/project/Talk2Me Screens.html` (seção *Cliente*, **interativo** — recebe perguntas do atendente pelo bus `__T2M_BUS`). Componente: `screen-client.jsx`. Componentes do DS: `LibrasViewer`, `Btn xxl`, `StartConversionBtn`, `ConnStatus`, `DeviceIndicator`.

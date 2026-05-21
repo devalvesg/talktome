@@ -13,7 +13,7 @@ tags:
   - design-system
 status: v1.0
 criado: 2026-05-14
-atualizado: 2026-05-19
+atualizado: 2026-05-20
 fonte: https://api.anthropic.com/v1/design/h/vDdDi4DEuaN5tMM-o5u70g?open_file=Talk2Me+Screens.html
 ---
 
@@ -21,6 +21,9 @@ fonte: https://api.anthropic.com/v1/design/h/vDdDi4DEuaN5tMM-o5u70g?open_file=Ta
 
 > [!abstract] Em uma frase
 > Sistema visual **v1.0** do Talk2Me — paleta, tipografia, tokens e componentes, derivados da paleta-base institucional **Midnight Blue `#191970`** e do acento **Teal `#0E9A8D`**.
+
+> [!success] Estado de implementação (M0 + M1) — DS em código
+> Os tokens viraram CSS variables `--t2m-*` em `src/styles/tokens.css` (replicados valor por valor) e estão mapeados para o tema do Tailwind v4 em `src/styles/index.css`. Os componentes core e de produto estão em `src/ds/components/` e podem ser inspecionados na rota **`/showcase`**. A partir do M1 o DS está **congelado** (mudança exige aviso no Quadro de Alocação do [[Plano de Desenvolvimento]]).
 
 > [!important] Apenas referência visual — NÃO copiar código
 > Este DS foi produzido no Claude Design (claude.ai/design) em **14–15 de maio de 2026** e está versionado em `docs/design-system-bundle/`.
@@ -412,10 +415,10 @@ No produto real, esse bus vira o **canal sincronizado da sessão** (WebSocket/We
 
 - [x] Validar paleta com pessoas surdas (foco em contraste do avatar contra fundo gradient).
 - [x] Decidir o tweak tipográfico final entre os 3. → **Tweak 3 · Humano (Lexend + Atkinson Hyperlegible)** escolhido em 2026-05-19.
-- [ ] Sobrescrever `--t2m-head`/`--t2m-body` no bundle e importar Google Fonts no app.
-- [ ] Exportar tokens para CSS custom properties + JSON consumível por Tailwind/Vanilla Extract.
-- [ ] Criar variante **dark mode** completa (parcialmente coberta pelo background `inverse`).
-- [ ] Documentar variantes do avatar 3D (pose neutra, sinalizando, repetindo).
+- [x] Sobrescrever `--t2m-head`/`--t2m-body` e importar Google Fonts no app. → feito no `index.html` + `src/styles/tokens.css` (M0).
+- [x] Exportar tokens para CSS custom properties consumíveis pelo Tailwind. → `tokens.css` (`--t2m-*`) + `@theme` no `index.css` (M0).
+- [ ] Criar variante **dark mode** completa (parcialmente coberta pelo background `inverse`). → previsto no M7.
+- [ ] Documentar variantes do avatar 3D (pose neutra, sinalizando, repetindo). → depende do M5 (ver [[Avatar 3D em LIBRAS]]).
 
 ## Notas relacionadas
 

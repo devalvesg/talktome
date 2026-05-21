@@ -9,9 +9,9 @@ tags:
   - tela
   - atendente
   - operacional
-status: ideação
+status: implementado
 criado: 2026-05-19
-atualizado: 2026-05-19
+atualizado: 2026-05-20
 artboard: design-system-bundle/project/screen-home.jsx
 ---
 
@@ -19,6 +19,10 @@ artboard: design-system-bundle/project/screen-home.jsx
 
 > [!abstract] Em uma frase
 > Tela inicial operacional do Talk2Me — **ponto de partida do atendente** para abrir uma sessão acessível com o cliente surdo.
+
+> [!success] Estado de implementação (M2 + M4)
+> Implementada em `src/features/home/Home.tsx` (rota `/home`). CTA XXL, seletor de tipo (Caixa/Balcão/Atendimento) e card de status com **código de sessão real**, QR (placeholder visual), link e copiar. "Iniciar conversa" gera o código; "Entrar no atendimento" leva o atendente a `/atendente?s=CODE` e o cliente entra por `/cliente?s=CODE` — ambos no mesmo canal Realtime.
+> **Pendente:** QR Code de verdade (gerador) em vez do placeholder; detecção real de conexão do cliente (presence) para a transição automática; "Testar câmera e microfone".
 
 > [!info] Artboard de referência
 > `docs/design-system-bundle/project/Talk2Me Screens.html` (seção *Home*, 900px de altura). Componente: `screen-home.jsx`. Todos os tokens visuais vêm do [[Design System]].
