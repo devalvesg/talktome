@@ -25,6 +25,9 @@ import { TopBar } from '@/app/TopBar';
 type Stage = 'ready' | 'creating' | 'waiting';
 type ServiceType = 'caixa' | 'balcao' | 'cliente';
 
+/** Código curto de sessão, ex.: T2M-9F4K (helper de módulo: usa Math.random). */
+const genCode = () => `T2M-${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
+
 const TYPES: { id: ServiceType; label: string; icon: IconName }[] = [
   { id: 'caixa', label: 'Caixa', icon: 'card' },
   { id: 'balcao', label: 'Balcão de informações', icon: 'info' },
@@ -54,22 +57,21 @@ export function Home() {
   const { toast } = useToast();
   const [stage, setStage] = useState<Stage>('ready');
   const [type, setType] = useState<ServiceType>('caixa');
-  const sessionId = 'T2M-9F4K';
-  const sessionLink = `https://talk2me.app/s/${sessionId}`;
+  const [code, setCode] = useState('');
+  const sessionLink = code ? `${window.location.origin}/cliente?s=${code}` : '';
   const timers = useRef<number[]>([]);
 
   useEffect(() => () => timers.current.forEach(clearTimeout), []);
 
   function start() {
+    setCode(genCode());
     setStage('creating');
-    timers.current.push(
-      window.setTimeout(() => setStage('waiting'), 700),
-      // Demo: cliente "conecta" sozinho e transita para o atendente.
-      window.setTimeout(() => {
-        toast({ tone: 'success', message: 'Cliente conectado!' });
-        navigate('/atendente');
-      }, 3500),
-    );
+    // Cria a sessão; o cliente entra pelo QR/link e o atendente pelo botão.
+    timers.current.push(window.setTimeout(() => setStage('waiting'), 700));
+  }
+
+  function enterAttendant() {
+    navigate(`/atendente?s=${code}`);
   }
 
   function copyLink() {
@@ -155,12 +157,12 @@ export function Home() {
                 <ConnStatus status="online" />
                 <Pill tone="warning">Aguardando cliente</Pill>
               </div>
-              <Pill tone="brand">{sessionId}</Pill>
+              <Pill tone="brand">{code}</Pill>
             </div>
 
             <div className="mt-6 grid items-center gap-6 sm:grid-cols-[200px_1fr]">
               <div className="justify-self-center">
-                <QrPlaceholder />
+                <QrPlaceholder seed={[...code].reduce((a, c) => a + c.charCodeAt(0), 0)} />
               </div>
               <div className="grid gap-4">
                 <p className="text-sm text-ink-2">
@@ -171,8 +173,8 @@ export function Home() {
                   <Btn variant="outline" icon="qr" onClick={copyLink}>
                     Copiar link
                   </Btn>
-                  <Btn variant="ghost" onClick={() => navigate('/atendente')}>
-                    Entrar agora
+                  <Btn onClick={enterAttendant} icon="arrow">
+                    Entrar no atendimento
                   </Btn>
                 </div>
                 <div className="flex items-center gap-3 pt-2">
