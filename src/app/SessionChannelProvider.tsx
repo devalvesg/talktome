@@ -13,6 +13,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from 'react';
@@ -44,29 +45,34 @@ const SessionContext = createContext<SessionContextValue | null>(null);
 export function SessionChannelProvider({ children }: { children: ReactNode }) {
   const [params] = useSearchParams();
   const code = params.get('s');
-
-  // Recria o canal quando o código muda (Mock <-> Supabase, ou troca de sessão).
-  const channel = useMemo(() => createChannel(code), [code]);
   const [state, setState] = useState<SessionState>(EMPTY_SESSION_STATE);
+  const channelRef = useRef<SessionChannel | null>(null);
 
+  // Cria e destrói o canal NO MESMO efeito. Criar no useMemo e fechar no
+  // cleanup quebra sob StrictMode: o close() (removeChannel) mata a inscrição
+  // Realtime e o re-run não a reconectaria. Pareando aqui, cada cleanup é
+  // seguido de um canal novo e funcional (Mock <-> Supabase ao trocar `code`).
   useEffect(() => {
+    const channel = createChannel(code);
+    channelRef.current = channel;
     // subscribe emite imediatamente o estado atual do canal (vazio ao trocar).
     const unsub = channel.subscribe(setState);
     return () => {
       unsub();
       channel.close();
+      channelRef.current = null;
     };
-  }, [channel]);
+  }, [code]);
 
   const value = useMemo<SessionContextValue>(
     () => ({
       state,
       code,
-      send: (patch) => channel.send(patch),
-      appendHistory: (entry) => channel.send({ history: [...state.history, entry] }),
-      reset: () => channel.send({ ...EMPTY_SESSION_STATE }),
+      send: (patch) => channelRef.current?.send(patch),
+      appendHistory: (entry) => channelRef.current?.send({ history: [...state.history, entry] }),
+      reset: () => channelRef.current?.send({ ...EMPTY_SESSION_STATE }),
     }),
-    [channel, state, code],
+    [state, code],
   );
 
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;
