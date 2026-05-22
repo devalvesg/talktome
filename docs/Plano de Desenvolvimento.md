@@ -29,7 +29,8 @@ atualizado: 2026-05-20
 > **M0 → M4 concluídos** e na branch `dev` (repo `github.com/devalvesg/talktome`).
 > - **M0** Fundação · **M1** Design System em código (`/showcase`) · **M2** 4 telas + roteamento · **M3** canal mock + fluxo · **M4** Supabase Realtime + `demo_requests`.
 > - Projeto Supabase **talk2me** provisionado (free tier, sa-east-1); RLS da `demo_requests` verificada.
-> - **Em aberto:** **M6** (reconhecimento, opcional), **M7** (validação WCAG + campo). Deploy no Vercel a conectar (`vercel.json` pronto). **M5** (avatar VLibras) implementado — falta só a validação de fidelidade, ver [[Avatar 3D em LIBRAS]].
+> - **Em aberto:** **M6** (reconhecimento, opcional), **M7** (validação WCAG + campo). **M5** (avatar VLibras) implementado — falta só a validação de fidelidade, ver [[Avatar 3D em LIBRAS]].
+> - **No ar:** primeira versão **`v0.1.0`** publicada no **Vercel** (deploy automático da `main` via integração GitHub).
 > - Pequeno desvio do plano: o Supabase foi provisionado já no início (não no M4) por conveniência. Veja o estado de cada tela nas notas [[Landing Page]] · [[Home do Sistema]] · [[Interface do Atendente]] · [[Interface do Cliente]].
 
 ## 1. Princípios do plano
@@ -286,7 +287,7 @@ Exemplo: `feat(client): adiciona LibrasViewer com legenda e botão repetir`
 
 | Módulo / área | Dono atual | Status | Marco |
 | ------------- | ---------- | ------ | ----- |
-| `infra` (config, tokens, deploy) | — | ✅ concluído (deploy a conectar) | M0 |
+| `infra` (config, tokens, deploy) | — | ✅ concluído (deploy no ar · v0.1.0) | M0 |
 | `ds/` (congelado após M1) | — | ✅ concluído · 🔒 congelado | M1 |
 | `session/` (contrato + Mock + Supabase) | — | ✅ concluído · 🔒 congelado | M1/M3/M4 |
 | `features/landing/` | — | ✅ concluído (M2) + form M4 | M2 |

@@ -24,9 +24,9 @@ curso: Engenharia de Software
 > [!abstract] Em uma frase
 > O **TalkToMe** é um software web que facilita a comunicação entre atendentes ouvintes e clientes com deficiência auditiva em ambientes de atendimento ao público — começando pelos supermercados — combinando avatar 3D em LIBRAS e, quando viável, reconhecimento de sinais em tempo real por visão computacional.
 
-> [!success] Estado do desenvolvimento (2026-05-20)
-> Protótipo funcional **M0 → M4** na branch `dev` (`github.com/devalvesg/talktome`): fundação, [[Design System]] em código, as 4 telas, fluxo síncrono atendente↔cliente e backend Supabase (Realtime + `demo_requests`). Detalhes e próximos passos no [[Plano de Desenvolvimento#Progresso atual (2026-05-20)]].
-> **Frente 1** (avatar em LIBRAS) pendente da PoC do VLibras → [[Avatar 3D em LIBRAS]] (M5). **Frente 2** (reconhecimento) é opcional (M6). Validação no M7.
+> [!success] Estado do desenvolvimento (2026-05-21)
+> Primeira versão **`v0.1.0` no ar** (Vercel, deploy da `main`). Implementado **M0 → M5** (`github.com/devalvesg/talktome`): fundação, [[Design System]] em código, as 4 telas, fluxo síncrono atendente↔cliente, backend Supabase (Realtime + `demo_requests`) e o **avatar em LIBRAS** (VLibras Player) no `LibrasViewer`. Detalhes no [[Plano de Desenvolvimento#Progresso atual (2026-05-20)]].
+> **Frente 1** (avatar em LIBRAS) implementada — falta só validar fidelidade → [[Avatar 3D em LIBRAS]]. **Frente 2** (reconhecimento) é opcional (M6). **M7**: validação WCAG + campo.
 
 ## De onde nasce a ideia
 
