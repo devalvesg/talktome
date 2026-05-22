@@ -51,6 +51,8 @@ export interface SessionState {
   avatarStatus: AvatarStatus;
   /** Mensagem curta de erro do avatar, quando avatarStatus === 'error'. */
   avatarError: string | null;
+  /** Atendente encerrou a sessão — o cliente é desconectado com aviso. */
+  ended: boolean;
 }
 
 /**
@@ -72,4 +74,5 @@ export const EMPTY_SESSION_STATE: SessionState = {
   librasText: null,
   avatarStatus: 'loading',
   avatarError: null,
+  ended: false,
 };
