@@ -6,11 +6,13 @@
  * Spec: docs/Interface do Cliente.md.
  */
 import { useCallback, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/cn';
 import {
   Btn,
   ConnStatus,
   DeviceIndicator,
+  EmptyState,
   Icon,
   LibrasViewer,
   PulseDot,
@@ -27,6 +29,7 @@ const now = () =>
   new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 
 export function Client() {
+  const navigate = useNavigate();
   const { toast } = useToast();
   const { state, send } = useSession();
   const timers = useRef<number[]>([]);
@@ -69,6 +72,29 @@ export function Client() {
         ),
       );
     }
+  }
+
+  // Atendente encerrou a sessão: desconecta o cliente com aviso.
+  if (state.ended) {
+    return (
+      <div className="flex min-h-dvh flex-col bg-bg">
+        <TopBar compact>
+          <ConnStatus status="offline" />
+        </TopBar>
+        <main className="mx-auto flex w-full max-w-md flex-1 items-center justify-center p-6">
+          <EmptyState
+            icon="check"
+            title="Atendimento encerrado"
+            description="O atendente finalizou a conversa. Você já pode se afastar do balcão; para um novo atendimento, peça que iniciem outra sessão."
+            action={
+              <Btn variant="primary" onClick={() => navigate('/')}>
+                Voltar ao início
+              </Btn>
+            }
+          />
+        </main>
+      </div>
+    );
   }
 
   return (

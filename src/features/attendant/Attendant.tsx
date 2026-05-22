@@ -23,6 +23,7 @@ import {
 import { TopBar } from '@/app/TopBar';
 import { useSession } from '@/app/SessionChannelProvider';
 import { QUICK_ACTIONS } from '@/session/QUICK_ACTIONS';
+import { EMPTY_SESSION_STATE } from '@/session/types';
 
 const now = () =>
   new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
@@ -32,7 +33,7 @@ const freeId = () => `free-${Date.now()}`;
 export function Attendant() {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { state, send, reset } = useSession();
+  const { state, send } = useSession();
   const [confirmEnd, setConfirmEnd] = useState(false);
 
   function sendQuestion(text: string, actionId?: string) {
@@ -61,8 +62,10 @@ export function Attendant() {
   }
 
   function endSession() {
-    reset();
-    navigate('/');
+    // Sinaliza o fim ao cliente (desconecta com aviso) e limpa o estado.
+    send({ ...EMPTY_SESSION_STATE, ended: true });
+    // Pequeno atraso para o broadcast sair antes de a troca de rota fechar o canal.
+    window.setTimeout(() => navigate('/'), 200);
   }
 
   const lastClient = [...state.history].reverse().find((h) => h.side === 'client');
