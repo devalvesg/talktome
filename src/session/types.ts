@@ -35,12 +35,22 @@ export interface HistoryEntry {
   kind: string;
 }
 
+/**
+ * Estado de carga do avatar na tela do CLIENTE, propagado ao atendente pelo
+ * canal. O atendente só libera as ações quando 'ready' e exibe alerta no 'error'.
+ */
+export type AvatarStatus = 'loading' | 'ready' | 'error';
+
 export interface SessionState {
   question: Question | null;
   clientAnswer: ClientAnswer | null;
   history: HistoryEntry[];
   clientRecording: boolean;
   librasText: string | null;
+  /** Status do avatar do cliente (M5). Default 'loading' até o cliente reportar. */
+  avatarStatus: AvatarStatus;
+  /** Mensagem curta de erro do avatar, quando avatarStatus === 'error'. */
+  avatarError: string | null;
 }
 
 /**
@@ -60,4 +70,6 @@ export const EMPTY_SESSION_STATE: SessionState = {
   history: [],
   clientRecording: false,
   librasText: null,
+  avatarStatus: 'loading',
+  avatarError: null,
 };
