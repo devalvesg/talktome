@@ -25,8 +25,8 @@ atualizado: 2026-05-20
 > [!info] Onde isso vive no produto
 > O avatar aparece no componente `LibrasViewer` da [[Interface do Cliente]]. A entrada vem do atendente via `QUICK_ACTIONS` ou texto livre (ver [[Funcionamento da Aplicação#Atendente → Cliente avatar em LIBRAS]]). Implementação prevista para o **M5** do [[Plano de Desenvolvimento]].
 
-> [!todo] Estado atual (2026-05-20) — PoC ainda não iniciada
-> O `LibrasViewer` já existe como **casca/placeholder** em código (`src/ds/components/product/LibrasViewer.tsx`): figura estilizada estática, pills `AVATAR · LIBRAS` / `SINALIZANDO` e legenda — já recebe a `question` do canal e exibe a legenda. **Falta a PoC do VLibras** (decisão go/no-go abaixo) e a integração do motor real (ou plano B). Nada disso bloqueia M1–M4, que usam o placeholder.
+> [!success] Estado atual (2026-05-21) — PoC feita e **M5 integrado**
+> A PoC rodou e o motor real foi integrado ao `LibrasViewer`. O avatar do **VLibras Player** sinaliza a `question` do canal na [[Interface do Cliente]], atrás da flag `VITE_VLIBRAS`. Decisão técnica **go** (carga e cobertura de vocabulário OK); **falta só a validação de fidelidade** com pessoa fluente em LIBRAS para o go formal. Ver [[#Resultado da PoC e integração (M5)]].
 
 ## Por que uma PoC antes de adotar
 
@@ -126,6 +126,30 @@ O vocabulário da frente 1 é **fixo e pequeno** (8 perguntas + opções + um pu
 
 > [!note] Não bloqueia o resto do projeto
 > Até o M5, o `LibrasViewer` usa um **placeholder**. A PoC roda em paralelo desde o M0 (spike do [[Plano de Desenvolvimento#7 Spike paralela PoC do VLibras]]) sem travar telas nem backend.
+
+## Resultado da PoC e integração (M5)
+
+> [!success] Decisão: **GO técnico** (fidelidade a confirmar)
+> Data: 2026-05-21. O avatar **renderiza rápido** e **reproduziu todas as 8 `QUICK_ACTIONS` + as frases livres** de teste. Pendência única para o go formal: **avaliação de fidelidade** com pessoa fluente em LIBRAS (avaliação cega) — ver [[Validação]].
+
+### Achado decisivo: widget ❌ vs player ✅
+
+Existem **dois** caminhos de integração do VLibras, e a escolha foi central:
+
+- **VLibras Widget** (`vlibras-plugin.js`, botão flutuante): ao abrir, torna a **página inteira** clicável/traduzível e **não há como restringir** quais textos (sem atributo tipo `vw-ignore`). Inadequado ao produto — o cliente não deve clicar em textos avulsos.
+- **VLibras Player** (engine por baixo do widget): embutível num container fixo e **comandado por código** — `player.load(el)` + `player.translate("CPF na nota?")`. Sem botão flutuante, sem cliques perdidos. **Escolhido** como motor do `LibrasViewer`.
+
+### Fragilidades registradas (confirmam o alerta da equipe)
+
+- O pacote npm `vlibras` foi **despublicado em 2024-02-24**. O fonte vive em [`spbgovbr-vlibras/vlibras-player-webjs`](https://github.com/spbgovbr-vlibras/vlibras-player-webjs) (webpack 1.x de 2016). Solução: vendorizamos o fonte e geramos o bundle com **esbuild** (`window`/`path`/`superagent@1.7` viram shims; superagent → `fetch`).
+- Fonte do bundle em `tools/vlibras-player/`; `npm run build` gera `public/vlibras/vlibras.bundle.js`.
+
+### Forma de integração (para o artigo)
+
+- **Avatar Unity WebGL (~14 MB)** vendorizado **same-origin** em `public/vlibras/target/` (evita atritos de CORS/COOP/COEP e **fixa a versão**, já que o CDN aponta para branch mutável).
+- **Tradução** (`traducao2.vlibras.gov.br`) e **dicionário de sinais** (`dicionario2.vlibras.gov.br`) continuam serviços remotos do VLibras — não vendorizáveis (dependência de rede em runtime).
+- Código: `src/lib/vlibrasPlayer.ts` (gerenciador singleton), `src/ds/components/product/VLibrasCanvas.tsx` e `LibrasViewer` (prop `live`, atrás da flag `VITE_VLIBRAS`). Em erro de carga, degrada para o placeholder **mantendo a legenda textual**.
+- **Status do avatar** propagado ao atendente pelo canal (`avatarStatus`): as ações rápidas e o texto livre só liberam quando o avatar do cliente está `ready`; erro vira alerta na [[Interface do Atendente]].
 
 ## Notas relacionadas
 

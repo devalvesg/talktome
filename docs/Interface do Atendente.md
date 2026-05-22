@@ -19,8 +19,9 @@ artboard: design-system-bundle/project/screen-attendant.jsx
 > [!abstract] Em uma frase
 > Painel **operacional desktop/tablet-first** usado pelo funcionário do supermercado durante o atendimento — concentra status da sessão, transcrição em tempo real da LIBRAS do cliente, ações rápidas pré-prontas e campo de texto livre.
 
-> [!success] Estado de implementação (M2 + M3)
+> [!success] Estado de implementação (M2 + M3 + M5)
 > Implementada em `src/features/attendant/Attendant.tsx` (rota `/atendente`). Header com `ConnStatus`/`DeviceIndicator`/Encerrar, `Transcription`, histórico de `ConversationCard`, grid das 8 `QUICK_ACTIONS` e texto livre. Ligada ao canal de sessão (`useSession`): ações e texto publicam `question` + histórico; a resposta do cliente chega pelo mesmo canal em tempo real. Encerrar pede confirmação (modal) e reseta a sessão.
+> **Gate do avatar (M5):** as ações rápidas e o texto livre só liberam quando o avatar do cliente está `ready` (campo `avatarStatus` do canal); enquanto carrega, um banner informa; em erro, um `Alert` "Avatar não carregado…" orienta o atendente.
 > **Pendente:** transcrição real (depende do reconhecimento, M6); baixa confiança/“pedir para repetir”; atalhos de teclado (1–9, Esc).
 
 > [!info] Artboard de referência
