@@ -57,7 +57,7 @@ Catálogo de [[Design System#Catálogo de ações rápidas]]:
 | `bag` | Aceita sacola? |
 | `help` | Precisa de ajuda? |
 | `cancel` | Deseja cancelar? |
-| `value` | Confirmar valor R$ 87,40? |
+| `value` | Confirmar valor final? |
 | `receipt` | Comprovante? |
 | `paymethod` | Forma de pagamento? |
 

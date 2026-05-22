@@ -369,7 +369,7 @@ Lista de checks de acessibilidade — cada item é um pill `success` (✓) ou ne
 | `bag`      | Aceita sacola?                | `bag`   | Sim · Não                                  |
 | `help`     | Precisa de ajuda?             | `help`  | Sim, preciso · Não, obrigado               |
 | `cancel`   | Deseja cancelar?              | `cancel` | Sim · Não                                 |
-| `value`    | Confirmar valor R$ 87,40?     | `money` | Sim, confirmo · Não                        |
+| `value`    | Confirmar valor final?        | `money` | Sim, confirmo · Não                        |
 | `receipt`  | Comprovante?                  | `print` | Impresso · Digital                         |
 | `paymethod` | Forma de pagamento?           | `money` | PIX · Cartão · Dinheiro                   |
 

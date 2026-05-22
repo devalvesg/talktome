@@ -67,7 +67,9 @@ export const QUICK_ACTIONS: QuickAction[] = [
   },
   {
     id: 'value',
-    text: 'Confirmar valor R$ 87,40?',
+    // Sem valor fixo: o montante varia por compra. Para confirmar um valor
+    // específico, o atendente usa o texto livre (ex.: "Confirmar R$ 87,40?").
+    text: 'Confirmar valor final?',
     icon: 'money',
     options: [
       { value: 'sim', label: 'Sim, confirmo', icon: 'check' },
