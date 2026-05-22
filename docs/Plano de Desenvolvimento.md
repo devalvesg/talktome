@@ -29,7 +29,7 @@ atualizado: 2026-05-20
 > **M0 → M4 concluídos** e na branch `dev` (repo `github.com/devalvesg/talktome`).
 > - **M0** Fundação · **M1** Design System em código (`/showcase`) · **M2** 4 telas + roteamento · **M3** canal mock + fluxo · **M4** Supabase Realtime + `demo_requests`.
 > - Projeto Supabase **talk2me** provisionado (free tier, sa-east-1); RLS da `demo_requests` verificada.
-> - **Em aberto:** **M5** (PoC do VLibras / avatar — ver [[Avatar 3D em LIBRAS]]), **M6** (reconhecimento, opcional), **M7** (validação WCAG + campo). Deploy no Vercel a conectar (`vercel.json` pronto).
+> - **Em aberto:** **M6** (reconhecimento, opcional), **M7** (validação WCAG + campo). Deploy no Vercel a conectar (`vercel.json` pronto). **M5** (avatar VLibras) implementado — falta só a validação de fidelidade, ver [[Avatar 3D em LIBRAS]].
 > - Pequeno desvio do plano: o Supabase foi provisionado já no início (não no M4) por conveniência. Veja o estado de cada tela nas notas [[Landing Page]] · [[Home do Sistema]] · [[Interface do Atendente]] · [[Interface do Cliente]].
 
 ## 1. Princípios do plano
@@ -240,6 +240,9 @@ Exemplo: `feat(client): adiciona LibrasViewer com legenda e botão repetir`
 
 ### M5 · Avatar 3D em LIBRAS (frente 1 — parte gráfica)
 
+> [!success] Implementado (2026-05-21) — fidelidade a validar
+> PoC feita e **VLibras Player** integrado ao `LibrasViewer` (flag `VITE_VLIBRAS`): o avatar sinaliza a `question` do canal, com legenda sincronizada, spinner de carga, *Repetir*, fallback para placeholder no erro e *gate* das ações do atendente até o avatar do cliente carregar. Falta só a **validação de fidelidade** com pessoa fluente. Detalhes em [[Avatar 3D em LIBRAS#Resultado da PoC e integração (M5)]].
+
 > [!note] Primeira computação gráfica do projeto — ainda na frente prioritária.
 
 - **Objetivo:** o avatar reproduz as mensagens do atendente em LIBRAS no `LibrasViewer`.
@@ -291,7 +294,8 @@ Exemplo: `feat(client): adiciona LibrasViewer com legenda e botão repetir`
 | `features/attendant/` | — | ✅ concluído | M2 |
 | `features/client/` | — | ✅ concluído | M2 |
 | `demo_requests` (schema + RLS) | — | ✅ concluído | M4 |
-| PoC VLibras (spike) | — | ⏳ pendente | paralelo / M5 |
+| PoC VLibras (spike) | — | ✅ feita (go técnico) | paralelo / M5 |
+| Avatar VLibras no LibrasViewer | — | ✅ implementado (fidelidade a validar) | M5 |
 | Reconhecimento de LIBRAS | — | ⏳ pendente (opcional) | M6 |
 | Validação WCAG + campo | — | ⏳ pendente | M7 |
 
