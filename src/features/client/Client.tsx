@@ -5,7 +5,7 @@
  * `clientRecording`. Motor de avatar/câmera real entra no M5/M6.
  * Spec: docs/Interface do Cliente.md.
  */
-import { useRef } from 'react';
+import { useCallback, useRef } from 'react';
 import { cn } from '@/lib/cn';
 import {
   Btn,
@@ -16,8 +16,10 @@ import {
   PulseDot,
   StartConversionBtn,
   useToast,
+  type AvatarLoadStatus,
   type IconName,
 } from '@/ds/components';
+import { repeatVLibras } from '@/lib/vlibrasPlayer';
 import { TopBar } from '@/app/TopBar';
 import { useSession } from '@/app/SessionChannelProvider';
 
@@ -28,8 +30,20 @@ export function Client() {
   const { toast } = useToast();
   const { state, send } = useSession();
   const timers = useRef<number[]>([]);
+  const lastAvatarStatus = useRef<string | null>(null);
   const question = state.question;
   const recording = state.clientRecording;
+
+  // Publica a carga do avatar no canal (o atendente libera as ações com 'ready').
+  const onAvatarStatus = useCallback(
+    (status: AvatarLoadStatus, error?: string) => {
+      const key = `${status}:${error ?? ''}`;
+      if (lastAvatarStatus.current === key) return;
+      lastAvatarStatus.current = key;
+      send({ avatarStatus: status, avatarError: error ?? null });
+    },
+    [send],
+  );
 
   function answer(value: string, label: string) {
     if (!question) return;
@@ -77,10 +91,17 @@ export function Client() {
             live
             caption={question?.text ?? 'Aguardando atendente…'}
             state={question ? 'signaling' : 'neutral'}
+            onAvatarStatus={onAvatarStatus}
           />
           <div className="mt-2 flex items-center justify-between">
             <span className="text-xs text-ink-3">Mensagem do atendente</span>
-            <Btn variant="outline" size="sm" icon="repeat" disabled={!question}>
+            <Btn
+              variant="outline"
+              size="sm"
+              icon="repeat"
+              disabled={!question}
+              onClick={() => repeatVLibras()}
+            >
               Repetir
             </Btn>
           </div>

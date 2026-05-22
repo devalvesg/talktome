@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { cn } from '@/lib/cn';
 import { isVLibrasEnabled } from '@/lib/vlibrasPlayer';
 import { Pill } from '../Pill';
 import { PulseDot } from '../PulseDot';
-import { VLibrasCanvas } from './VLibrasCanvas';
+import { Spinner } from '../Spinner';
+import { VLibrasCanvas, type AvatarLoadStatus } from './VLibrasCanvas';
 
 export type LibrasState = 'signaling' | 'neutral';
 
@@ -17,25 +18,39 @@ export interface LibrasViewerProps {
    * VITE_VLIBRAS=on. Telas do produto (Cliente) passam true; catálogo do DS não.
    */
   live?: boolean;
+  /** Reporta a carga do avatar (a tela do Cliente propaga ao atendente). */
+  onAvatarStatus?: (status: AvatarLoadStatus, error?: string) => void;
   className?: string;
 }
 
 /**
  * Área do avatar em LIBRAS. Cromo (pills + legenda) + ou o placeholder estilizado
  * (M1) ou o motor real VLibras Player (M5, quando `live` e a flag estão ligados).
+ * Em erro de carga, degrada para o placeholder mantendo a legenda textual.
  */
 export function LibrasViewer({
   size = 'md',
   state = 'signaling',
   caption = 'Bom dia! Em que posso ajudar?',
   live = false,
+  onAvatarStatus,
   className,
 }: LibrasViewerProps) {
   const h = size === 'lg' ? 320 : 220;
   const useEngine = live && isVLibrasEnabled;
   const [signing, setSigning] = useState(false);
+  // Sem o motor (placeholder), o avatar já nasce "pronto".
+  const [status, setStatus] = useState<AvatarLoadStatus>(useEngine ? 'loading' : 'ready');
+  const [error, setError] = useState<string | undefined>();
+
+  // Propaga o status pro consumidor (Cliente publica no canal de sessão).
+  useEffect(() => {
+    onAvatarStatus?.(status, error);
+  }, [status, error, onAvatarStatus]);
+
   // Com o motor real, o badge segue a sinalização de fato; senão, a prop `state`.
   const isSignaling = useEngine ? signing : state === 'signaling';
+  const showPlaceholder = !useEngine || status === 'error';
 
   return (
     <div
@@ -45,13 +60,24 @@ export function LibrasViewer({
         background: 'linear-gradient(160deg, #0F0F44 0%, #191970 70%, #2E2E8C 100%)',
       }}
     >
-      {useEngine ? (
+      {useEngine && status !== 'error' && (
         <VLibrasCanvas
           text={caption}
           onSigningChange={setSigning}
+          onStatusChange={(s, e) => {
+            setStatus(s);
+            setError(e);
+          }}
           className="absolute inset-0 [&_canvas]:!h-full [&_canvas]:!w-full"
         />
-      ) : (
+      )}
+      {useEngine && status === 'loading' && (
+        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 text-ink-inv">
+          <Spinner size={28} color="#33D6C6" />
+          <span className="text-xs opacity-80">Preparando intérprete…</span>
+        </div>
+      )}
+      {showPlaceholder && (
         <svg
           width="100%"
           height={h}
