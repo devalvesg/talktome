@@ -8,6 +8,7 @@
 import { useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
+  Alert,
   Btn,
   ConnStatus,
   ConversationCard,
@@ -50,6 +51,7 @@ export function Attendant() {
 
   function onFreeText(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (state.avatarStatus !== 'ready') return;
     const input = e.currentTarget.elements.namedItem('msg') as HTMLInputElement;
     const text = input.value.trim();
     if (!text) return;
@@ -64,6 +66,7 @@ export function Attendant() {
   }
 
   const lastClient = [...state.history].reverse().find((h) => h.side === 'client');
+  const avatarReady = state.avatarStatus === 'ready';
 
   return (
     <div className="flex min-h-dvh flex-col bg-bg">
@@ -91,6 +94,22 @@ export function Attendant() {
                 : null}
           </Transcription>
 
+          {/* Status do avatar do cliente — bloqueia o envio até carregar */}
+          {state.avatarStatus === 'error' ? (
+            <Alert tone="error" title="Avatar não carregado na tela do cliente">
+              {state.avatarError
+                ? `Erro: ${state.avatarError}. `
+                : ''}
+              Peça para o cliente recarregar a página. As ações ficam indisponíveis até o avatar voltar.
+            </Alert>
+          ) : (
+            !avatarReady && (
+              <Alert tone="info" title="Aguardando o avatar do cliente carregar">
+                As ações rápidas e o envio liberam assim que o avatar estiver pronto na tela do cliente.
+              </Alert>
+            )
+          )}
+
           {/* Ações rápidas */}
           <section>
             <h2 className="mb-3 font-head text-[15px] font-semibold text-ink">Ações rápidas</h2>
@@ -102,6 +121,7 @@ export function Attendant() {
                   size="xl"
                   icon={a.icon as IconName}
                   className="!h-auto min-h-16 flex-col gap-2 py-3 text-center !text-sm"
+                  disabled={!avatarReady}
                   onClick={() => sendQuestion(a.text, a.id)}
                 >
                   {a.text}
@@ -117,9 +137,10 @@ export function Attendant() {
                 name="msg"
                 label="Mensagem personalizada"
                 placeholder="Digite uma pergunta ou instrução para o cliente"
+                disabled={!avatarReady}
               />
             </div>
-            <Btn type="submit" icon="send">
+            <Btn type="submit" icon="send" disabled={!avatarReady}>
               Enviar
             </Btn>
           </form>

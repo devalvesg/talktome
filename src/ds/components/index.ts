@@ -23,6 +23,7 @@ export { DeviceIndicator } from './product/DeviceIndicator';
 export { ConnStatus, type ConnState } from './product/ConnStatus';
 export { AudioPlayer } from './product/AudioPlayer';
 export { LibrasViewer, type LibrasState } from './product/LibrasViewer';
+export { type AvatarLoadStatus } from './product/VLibrasCanvas';
 export { Transcription } from './product/Transcription';
 export { ConversationCard } from './product/ConversationCard';
 export { A11yStatus, type A11yCheck } from './product/A11yStatus';

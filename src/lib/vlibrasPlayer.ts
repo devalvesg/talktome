@@ -42,6 +42,7 @@ export interface VLibrasController {
 let scriptPromise: Promise<void> | null = null;
 let player: VLibrasPlayerInstance | null = null;
 let readyPromise: Promise<VLibrasController> | null = null;
+let controller: VLibrasController | null = null;
 const signingListeners = new Set<(signing: boolean) => void>();
 
 function loadScript(): Promise<void> {
@@ -84,7 +85,7 @@ export function mountVLibras(container: HTMLElement): Promise<VLibrasController>
 
         player = new window.VLibras.Player({ targetPath: TARGET_PATH });
 
-        const controller: VLibrasController = {
+        const ctrl: VLibrasController = {
           translate: (text) => player?.translate(text),
           stop: () => player?.stop(),
           repeat: () => player?.repeat(),
@@ -94,17 +95,23 @@ export function mountVLibras(container: HTMLElement): Promise<VLibrasController>
             return () => signingListeners.delete(cb);
           },
         };
+        controller = ctrl;
 
         // gloss:start / gloss:end = avatar de fato começou/terminou de sinalizar.
         player.on('gloss:start', () => emitSigning(true));
         player.on('gloss:end', () => emitSigning(false));
-        player.on('load', () => resolve(controller));
+        player.on('load', () => resolve(ctrl));
 
         player.load(container);
       }),
   );
 
   return readyPromise;
+}
+
+/** Re-sinaliza a última frase tocada (botão Repetir). No-op se o avatar não carregou. */
+export function repeatVLibras(): void {
+  controller?.repeat();
 }
 
 /** Se a flag VITE_VLIBRAS estiver ligada. */
