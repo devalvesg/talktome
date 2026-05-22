@@ -31,6 +31,7 @@ Thumbs.db
 node_modules/
 dist/
 dist-ssr/
+.vite/
 *.local
 
 # Variáveis de ambiente (segredos / config por máquina)
