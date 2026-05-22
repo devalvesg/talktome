@@ -74,6 +74,7 @@ export function Client() {
         <div>
           <LibrasViewer
             size="lg"
+            live
             caption={question?.text ?? 'Aguardando atendente…'}
             state={question ? 'signaling' : 'neutral'}
           />
