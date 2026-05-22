@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PoC VLibras Player — controlado por código (modelo do M5)</title>
+    <!--
+      Demo do VLibras.Player CONTROLADO POR CÓDIGO. Diferente do widget:
+        - o avatar fica FIXO neste container (nada de botão flutuante);
+        - SÓ os botões abaixo disparam sinalização (player.translate(...));
+        - clicar em qualquer outro texto da página NÃO faz nada.
+      É o modelo que o M5 vai usar no LibrasViewer.
+
+      Player: spbgovbr-vlibras/vlibras-player-webjs (npm "vlibras", despublicado
+      em 2024 — por isso bundlamos do código-fonte: vendor/vlibras.bundle.js).
+      Avatar (Unity WebGL) + dicionário + tradução: servidos pelo VLibras.
+
+      Rodar (precisa http, não file://):
+        npx serve tools/vlibras-player   (ou)  python3 -m http.server -d tools/vlibras-player 5052
+    -->
+    <style>
+      :root {
+        --brand: #191970; --brand-deep: #0f0f44; --brand-soft: #2e2e8c;
+        --teal: #1aa899; --bg: #f4f5fb; --card: #fff; --ink: #14142b;
+        --ink-2: #4b4b66; --ink-3: #8a8aa3; --line: #e3e4f0;
+        --ok: #1a8f3c; --err: #b0202f; --warn: #b8860b; --radius: 14px;
+      }
+      * { box-sizing: border-box; }
+      body { margin: 0; font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        color: var(--ink); background: var(--bg); }
+      header { background: linear-gradient(160deg, var(--brand-deep), var(--brand) 70%, var(--brand-soft));
+        color: #fff; padding: 20px; }
+      header h1 { margin: 0 0 4px; font-size: 19px; }
+      header p { margin: 0; color: #cfd0ec; font-size: 13px; max-width: 760px; }
+      .badge { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .08em;
+        text-transform: uppercase; background: rgba(255,255,255,.16); padding: 3px 8px;
+        border-radius: 999px; margin-bottom: 8px; }
+      main { max-width: 980px; margin: 0 auto; padding: 20px;
+        display: grid; gap: 18px; grid-template-columns: 1fr; }
+      @media (min-width: 800px) { main { grid-template-columns: 360px 1fr; align-items: start; } }
+
+      .panel { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; }
+      .panel h2 { margin: 0 0 10px; font-size: 14px; }
+
+      /* Container do avatar — espelha o LibrasViewer (gradient brand). */
+      #avatar {
+        position: relative; width: 100%; aspect-ratio: 3/4; min-height: 360px;
+        border-radius: var(--radius); overflow: hidden;
+        background: linear-gradient(160deg, #0f0f44, #191970 70%, #2e2e8c);
+      }
+      #avatar canvas { width: 100% !important; height: 100% !important; display: block; }
+      #avatar .overlay { position: absolute; inset: 0; display: grid; place-items: center;
+        color: #cfd0ec; font-size: 13px; text-align: center; padding: 20px; pointer-events: none; }
+      .caption { margin-top: 10px; background: #fff; border: 1px solid var(--line);
+        border-radius: 10px; padding: 10px 12px; font-size: 14px; min-height: 44px; }
+      .caption .lbl { font-size: 10px; text-transform: uppercase; letter-spacing: .12em; color: var(--ink-3); }
+
+      .status { display: flex; gap: 14px; flex-wrap: wrap; font-size: 13px; color: var(--ink-2); margin-top: 8px; }
+      .status b { color: var(--ink); }
+      .status .good { color: var(--ok); } .status .bad { color: var(--err); }
+
+      .phrases { display: grid; gap: 8px; }
+      .phrases button {
+        font: inherit; font-size: 15px; font-weight: 600; text-align: left; cursor: pointer;
+        border: 1px solid var(--line); background: #f7f8fe; color: var(--ink);
+        padding: 11px 13px; border-radius: 10px; transition: border-color .15s, background .15s;
+      }
+      .phrases button:hover { border-color: var(--teal); background: #eef0fa; }
+      .phrases button:disabled { opacity: .5; cursor: wait; }
+      .phrases button .id { font: 11px/1 ui-monospace, monospace; color: var(--ink-3); float: right; }
+      .phrases .sep { font-size: 11px; text-transform: uppercase; letter-spacing: .08em;
+        color: var(--ink-3); margin: 10px 0 2px; font-weight: 700; }
+
+      .controls { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+      .controls button, .controls label { font: inherit; font-size: 13px; font-weight: 600; cursor: pointer;
+        border: 1px solid var(--brand); color: var(--brand); background: #fff; padding: 7px 11px; border-radius: 9px; }
+      .controls input[type=range] { vertical-align: middle; }
+      .free { width: 100%; font: inherit; font-size: 14px; border: 1px solid var(--line);
+        border-radius: 9px; padding: 9px 11px; margin-top: 8px; }
+      .note { color: var(--ink-3); font-size: 12px; margin-top: 10px; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <span class="badge">Spike · modelo do M5 · não é o app</span>
+      <h1>VLibras Player — controlado por código</h1>
+      <p>
+        O avatar fica fixo no container e <b>só sinaliza o que os botões mandam</b>
+        (<code>player.translate(texto)</code>). Sem botão flutuante, sem a página virar clicável —
+        diferente do widget. É como o avatar entraria no <code>LibrasViewer</code>.
+      </p>
+    </header>
+
+    <main>
+      <section class="panel">
+        <h2>Avatar (LibrasViewer)</h2>
+        <div id="avatar"><div class="overlay" id="overlay">Carregando avatar do VLibras…<br />(~14&nbsp;MB na 1ª vez)</div></div>
+        <div class="caption"><span class="lbl">Traduzindo</span><div id="caption">—</div></div>
+        <div class="status">
+          <span>Avatar: <b id="st-ready">carregando…</b></span>
+          <span>Carga: <b id="st-load">—</b></span>
+          <span>Latência último: <b id="st-lat">—</b></span>
+        </div>
+        <div class="controls">
+          <button id="btn-repeat">↻ Repetir</button>
+          <button id="btn-stop">⏹ Parar</button>
+          <label>Velocidade <input type="range" id="speed" min="0" max="2" step="0.1" value="1" /></label>
+        </div>
+        <p class="note">Tradução e dicionário: servidores do VLibras. Avatar: Unity WebGL via CDN.</p>
+      </section>
+
+      <section class="panel">
+        <h2>Disparar sinalização</h2>
+        <div class="phrases" id="phrases"></div>
+        <div class="sep">Texto livre</div>
+        <input class="free" id="free" placeholder="digite uma frase e Enter…" />
+        <p class="note">Cada botão chama <code>player.translate()</code> — exatamente o que o atendente faria.</p>
+      </section>
+    </main>
+
+    <script src="./vendor/vlibras.bundle.js"></script>
+    <script>
+      var TARGET = 'https://cdn.jsdelivr.net/gh/spbgovbr-vlibras/vlibras-portal@sgd/app/target';
+
+      var QUICK = [
+        ['cpf', 'CPF na nota?'], ['pay', 'Crédito ou débito?'], ['bag', 'Aceita sacola?'],
+        ['help', 'Precisa de ajuda?'], ['cancel', 'Deseja cancelar?'], ['value', 'Confirmar valor R$ 87,40?'],
+        ['receipt', 'Comprovante?'], ['paymethod', 'Forma de pagamento?'],
+      ];
+      var FREE = [
+        ['free-1', 'Corredor 7, ao fundo à direita.'], ['free-2', 'Onde fica o açougue?'],
+        ['free-3', 'Aguarde um momento, por favor.'], ['free-4', 'Pode passar o próximo cliente.'],
+      ];
+
+      var fmt = function (ms) { return (ms / 1000).toFixed(1).replace('.', ',') + ' s'; };
+      var $ = function (id) { return document.getElementById(id); };
+
+      var t0Page = performance.now();
+      var ready = false;
+      var tCmd = null; // momento do comando, p/ medir latência até começar a sinalizar
+      var lastText = '';
+
+      var player = new VLibras.Player({ targetPath: TARGET });
+
+      player.on('load', function () {
+        ready = true;
+        var dt = performance.now() - t0Page;
+        $('overlay').style.display = 'none';
+        $('st-ready').textContent = 'pronto ✅';
+        $('st-ready').className = 'good';
+        $('st-load').textContent = fmt(dt) + (dt <= 3000 ? ' ✅' : ' ⛔');
+        $('st-load').className = dt <= 3000 ? 'good' : 'bad';
+      });
+
+      // gloss:start = avatar realmente começou a animar o sinal.
+      player.on('gloss:start', function () {
+        if (tCmd != null) {
+          var dt = performance.now() - tCmd;
+          $('st-lat').textContent = fmt(dt) + (dt <= 1000 ? ' ✅' : ' ⛔');
+          $('st-lat').className = dt <= 1000 ? 'good' : 'bad';
+          tCmd = null;
+        }
+      });
+
+      function sign(text) {
+        if (!ready) return;
+        lastText = text;
+        tCmd = performance.now();
+        $('caption').textContent = text;
+        $('st-lat').textContent = '⏳ traduzindo…';
+        $('st-lat').className = '';
+        player.translate(text);
+      }
+
+      // Monta os botões
+      var box = $('phrases');
+      QUICK.forEach(function (p) {
+        var b = document.createElement('button');
+        b.innerHTML = p[1] + '<span class="id">' + p[0] + '</span>';
+        b.onclick = function () { sign(p[1]); };
+        box.appendChild(b);
+      });
+      var sep = document.createElement('div'); sep.className = 'sep'; sep.textContent = 'Frases livres de apoio';
+      box.appendChild(sep);
+      FREE.forEach(function (p) {
+        var b = document.createElement('button');
+        b.innerHTML = p[1] + '<span class="id">' + p[0] + '</span>';
+        b.onclick = function () { sign(p[1]); };
+        box.appendChild(b);
+      });
+
+      $('free').addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && e.target.value.trim()) sign(e.target.value.trim());
+      });
+      $('btn-repeat').onclick = function () { if (lastText) sign(lastText); };
+      $('btn-stop').onclick = function () { try { player.stop(); } catch (_) {} };
+      $('speed').oninput = function (e) { try { player.setSpeed(parseFloat(e.target.value)); } catch (_) {} };
+
+      // Carrega o avatar no container.
+      player.load($('avatar'));
+    </script>
+  </body>
+</html>

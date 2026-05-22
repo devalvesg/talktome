@@ -1,0 +1,19 @@
+{
+  "name": "tools-vlibras-player",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Fonte reproduzível do bundle do VLibras Player usado no app (M5). Build gera public/vlibras/vlibras.bundle.js.",
+  "type": "commonjs",
+  "scripts": {
+    "build": "esbuild player-src/index.js --bundle --format=iife --global-name=VLibrasBundle --outfile=vendor/vlibras.bundle.js --alias:window=./shims/window.js --alias:path=./shims/empty.js --alias:superagent=./shims/superagent.js && cp vendor/vlibras.bundle.js ../../public/vlibras/vlibras.bundle.js"
+  },
+  "dependencies": {
+    "events": "^3.3.0",
+    "inherits": "^2.0.4",
+    "object-assign": "^4.1.1",
+    "url-join": "^4.0.1"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0"
+  }
+}
