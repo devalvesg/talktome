@@ -9,6 +9,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/cn';
 import {
+  Alert,
   Btn,
   Card,
   ConnStatus,
@@ -28,10 +29,11 @@ type ServiceType = 'caixa' | 'balcao' | 'cliente';
 /** Código curto de sessão, ex.: T2M-9F4K (helper de módulo: usa Math.random). */
 const genCode = () => `T2M-${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
 
-const TYPES: { id: ServiceType; label: string; icon: IconName }[] = [
+// `soon`: tela ainda não construída — não permite iniciar atendimento (só Caixa por ora).
+const TYPES: { id: ServiceType; label: string; icon: IconName; soon?: boolean }[] = [
   { id: 'caixa', label: 'Caixa', icon: 'card' },
-  { id: 'balcao', label: 'Balcão de informações', icon: 'info' },
-  { id: 'cliente', label: 'Atendimento ao cliente', icon: 'users' },
+  { id: 'balcao', label: 'Balcão de informações', icon: 'info', soon: true },
+  { id: 'cliente', label: 'Atendimento ao cliente', icon: 'users', soon: true },
 ];
 
 /** Grid pseudo-aleatório que lembra um QR Code (placeholder visual do M2). */
@@ -61,9 +63,14 @@ export function Home() {
   const sessionLink = code ? `${window.location.origin}/cliente?s=${code}` : '';
   const timers = useRef<number[]>([]);
 
+  const selected = TYPES.find((t) => t.id === type)!;
+  const available = !selected.soon;
+
   useEffect(() => () => timers.current.forEach(clearTimeout), []);
 
   function start() {
+    // Guarda: tipos sem tela pronta não podem iniciar atendimento.
+    if (!available) return;
     setCode(genCode());
     setStage('creating');
     // Cria a sessão; o cliente entra pelo QR/link e o atendente pelo botão.
@@ -120,7 +127,10 @@ export function Home() {
                 <span className={cn('grid size-10 place-items-center rounded-md', active ? 'bg-brand text-ink-inv' : 'bg-muted text-ink-2')}>
                   <Icon name={t.icon} size={20} stroke={2.2} />
                 </span>
-                <span className={cn('font-semibold', active ? 'text-brand' : 'text-ink')}>{t.label}</span>
+                <span className="flex flex-1 flex-wrap items-center gap-2">
+                  <span className={cn('font-semibold', active ? 'text-brand' : 'text-ink')}>{t.label}</span>
+                  {t.soon && <Pill tone="default">Em breve</Pill>}
+                </span>
               </button>
             );
           })}
@@ -129,7 +139,14 @@ export function Home() {
         {/* CTA */}
         {stage === 'ready' && (
           <div className="mt-10 grid place-items-center gap-4">
-            <StartConversionBtn onClick={start} />
+            {available ? (
+              <StartConversionBtn onClick={start} />
+            ) : (
+              <Alert tone="info" title="Tela em construção" className="w-full max-w-xl">
+                O atendimento “{selected.label}” ainda não está disponível. Por enquanto,
+                selecione <strong>Caixa</strong> para iniciar uma sessão.
+              </Alert>
+            )}
             <div className="flex flex-wrap justify-center gap-2">
               <Btn variant="outline" size="lg" icon="cam">
                 Testar câmera e microfone
