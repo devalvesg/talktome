@@ -91,7 +91,9 @@ export function Attendant() {
         <div className="flex flex-col gap-5">
           <Transcription active={state.clientRecording} meta={state.clientRecording ? 'Recebendo…' : 'PT-BR · 98%'}>
             {state.clientRecording
-              ? 'Recebendo LIBRAS…'
+              ? state.librasText && state.librasText.length > 0
+                ? state.librasText
+                : 'Recebendo LIBRAS…'
               : lastClient
                 ? lastClient.text
                 : null}

@@ -9,15 +9,24 @@
   "colorGroups": [
     {
       "query": "tag:#moc",
-      "color": { "a": 1, "rgb": 14701138 }
+      "color": {
+        "a": 1,
+        "rgb": 14701138
+      }
     },
     {
       "query": "tag:#funcionalidade",
-      "color": { "a": 1, "rgb": 5431518 }
+      "color": {
+        "a": 1,
+        "rgb": 5431518
+      }
     },
     {
       "query": "tag:#pesquisa",
-      "color": { "a": 1, "rgb": 13139026 }
+      "color": {
+        "a": 1,
+        "rgb": 13139026
+      }
     }
   ],
   "collapse-display": false,
@@ -30,6 +39,6 @@
   "repelStrength": 12,
   "linkStrength": 1,
   "linkDistance": 250,
-  "scale": 1,
+  "scale": 0.9932650304550712,
   "close": true
 }
