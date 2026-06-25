@@ -38,11 +38,35 @@ const PATHS: Record<string, JSX.Element> = {
     </>
   ),
   play: <polygon points="6,4 20,12 6,20" fill="currentColor" stroke="none" />,
-  stop: <rect x="5" y="5" width="14" height="14" rx="2" fill="currentColor" stroke="none" />,
+  stop: (
+    <rect
+      x="5"
+      y="5"
+      width="14"
+      height="14"
+      rx="2"
+      fill="currentColor"
+      stroke="none"
+    />
+  ),
   pause: (
     <>
-      <rect x="6" y="5" width="4" height="14" fill="currentColor" stroke="none" />
-      <rect x="14" y="5" width="4" height="14" fill="currentColor" stroke="none" />
+      <rect
+        x="6"
+        y="5"
+        width="4"
+        height="14"
+        fill="currentColor"
+        stroke="none"
+      />
+      <rect
+        x="14"
+        y="5"
+        width="4"
+        height="14"
+        fill="currentColor"
+        stroke="none"
+      />
     </>
   ),
   repeat: (
@@ -184,7 +208,13 @@ const PATHS: Record<string, JSX.Element> = {
     </>
   ),
   arrow: <path d="M5 12h14M13 5l7 7-7 7" />,
-  sparkle: <path d="M12 3l2 6 6 2-6 2-2 6-2-6-6-2 6-2z" fill="currentColor" stroke="none" />,
+  sparkle: (
+    <path
+      d="M12 3l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"
+      fill="currentColor"
+      stroke="none"
+    />
+  ),
   print: (
     <>
       <path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
@@ -196,6 +226,12 @@ const PATHS: Record<string, JSX.Element> = {
   ),
   shop: (
     <path d="M3 9l1.5-5h15L21 9M3 9v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9M3 9h18M8 14h8" />
+  ),
+  maximize: (
+    <path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M3 16v3a2 2 0 0 0 2 2h3" />
+  ),
+  minimize: (
+    <path d="M8 3v3a2 2 0 0 1-2 2H3M16 3v3a2 2 0 0 0 2 2h3M21 16h-3a2 2 0 0 0-2 2v3M3 16h3a2 2 0 0 1 2 2v3" />
   ),
 };
 

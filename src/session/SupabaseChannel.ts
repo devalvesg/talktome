@@ -16,6 +16,7 @@ export class SupabaseChannel implements SessionChannel {
   private subs = new Set<(state: SessionState) => void>();
   private state: SessionState = EMPTY_SESSION_STATE;
   private subscribed = false;
+  private syncTimers: ReturnType<typeof setTimeout>[] = [];
 
   constructor(code: string) {
     this.channel = supabase.channel(`t2m:${code}`, {
@@ -34,7 +35,17 @@ export class SupabaseChannel implements SessionChannel {
       .subscribe((status) => {
         if (status === 'SUBSCRIBED') {
           this.subscribed = true;
-          void this.broadcast('sync-request', {});
+          // Pede o estado atual a quem já está na sessão. No "cold start" do
+          // Realtime (projeto recém-criado/ocioso) a primeira mensagem pode se
+          // perder; repetimos algumas vezes nos primeiros segundos. Basta uma
+          // resposta chegar para destravar o estado (ex.: avatarStatus do
+          // cliente que libera as ações do atendente). Como o estado é
+          // efêmero e last-writer-wins, repetir o pedido é inofensivo.
+          for (const delay of [0, 800, 2500, 6000]) {
+            this.syncTimers.push(
+              setTimeout(() => void this.broadcast('sync-request', {}), delay),
+            );
+          }
         }
       });
   }
@@ -54,6 +65,8 @@ export class SupabaseChannel implements SessionChannel {
   }
 
   close(): void {
+    for (const t of this.syncTimers) clearTimeout(t);
+    this.syncTimers = [];
     void supabase.removeChannel(this.channel);
     this.subs.clear();
   }
