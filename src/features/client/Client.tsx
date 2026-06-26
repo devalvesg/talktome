@@ -5,7 +5,7 @@
  * `clientRecording`. Motor de avatar/câmera real entra no M5/M6.
  * Spec: docs/Interface do Cliente.md.
  */
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/cn';
 import {
@@ -32,6 +32,10 @@ const now = () =>
     minute: '2-digit',
   });
 
+// mm:ss a partir de segundos decorridos.
+const fmtElapsed = (s: number) =>
+  `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
+
 export function Client() {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -43,6 +47,14 @@ export function Client() {
   // a sessão, `fullscreen` vira false e o overlay recolhe sozinho).
   const [maximized, setMaximized] = useState(false);
   const fullscreen = maximized && recording;
+
+  // Cronômetro real da gravação (mm:ss). Reset acontece no toggleRecording.
+  const [elapsed, setElapsed] = useState(0);
+  useEffect(() => {
+    if (!recording) return;
+    const id = window.setInterval(() => setElapsed((s) => s + 1), 1000);
+    return () => window.clearInterval(id);
+  }, [recording]);
 
   // Reconhecimento de datilologia: ativo só enquanto o cliente está "gravando".
   // O texto soletrado é publicado em `librasText` para o atendente acompanhar.
@@ -79,9 +91,31 @@ export function Client() {
     toast({ tone: 'success', message: `Enviado: ${label}` });
   }
 
+  // Envia a palavra/frase soletrada ao atendente: entra no histórico e a
+  // transcrição ao vivo é zerada (recognition.clear emite librasText vazio).
+  // A gravação continua ligada para o cliente soletrar a próxima palavra.
+  // Se havia uma pergunta aberta, a resposta em LIBRAS a conclui: limpa a
+  // `question` (somem os botões de ação rápida) e registra o `clientAnswer`.
+  function sendSpelled() {
+    const text = recognition.text.trim();
+    if (!text) return;
+    send({
+      ...(question
+        ? { question: null, clientAnswer: { questionId: question.id, value: text } }
+        : null),
+      history: [
+        ...state.history,
+        { side: 'client', text, time: now(), kind: 'LIBRAS → ÁUDIO' },
+      ],
+    });
+    recognition.clear();
+    toast({ tone: 'success', message: `Enviado: ${text}` });
+  }
+
   function toggleRecording() {
     const next = !recording;
     if (!next) setMaximized(false);
+    setElapsed(0);
     send({ clientRecording: next });
     toast({
       tone: 'info',
@@ -307,30 +341,9 @@ export function Client() {
                     : 'rounded-[12px] border px-3 py-2.5',
                 )}
               >
-                <div className="flex items-center justify-between gap-2">
-                  <span className="inline-flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide text-ink-3">
-                    <Icon name="hand" size={14} /> Texto soletrado
-                  </span>
-                  <span className="flex gap-1">
-                    <Btn
-                      variant="ghost"
-                      size="sm"
-                      onClick={recognition.backspace}
-                      disabled={!recognition.text}
-                    >
-                      ⌫ Apagar
-                    </Btn>
-                    <Btn
-                      variant="ghost"
-                      size="sm"
-                      icon="x"
-                      onClick={recognition.clear}
-                      disabled={!recognition.text}
-                    >
-                      Limpar
-                    </Btn>
-                  </span>
-                </div>
+                <span className="inline-flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide text-ink-3">
+                  <Icon name="hand" size={14} /> Texto soletrado
+                </span>
                 <p
                   className={cn(
                     'mt-2 flex min-h-9 items-center font-bold tracking-[0.12em] text-ink',
@@ -351,6 +364,42 @@ export function Client() {
                     </em>
                   )}
                 </p>
+                {/* Ações acessíveis: alvos de toque amplos (≥44px), rótulos
+                    autoexplicativos e borda visível para quem usa toque/baixa visão. */}
+                <div className="mt-3 flex flex-col gap-2">
+                  <Btn
+                    variant="primary"
+                    size="xl"
+                    icon="send"
+                    full
+                    onClick={sendSpelled}
+                    disabled={!recognition.text}
+                  >
+                    Enviar mensagem
+                  </Btn>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Btn
+                      variant="outline"
+                      size="lg"
+                      icon="chevL"
+                      onClick={recognition.backspace}
+                      disabled={!recognition.text}
+                      aria-label="Apagar a última letra"
+                    >
+                      Apagar letra
+                    </Btn>
+                    <Btn
+                      variant="outline"
+                      size="lg"
+                      icon="x"
+                      onClick={recognition.clear}
+                      disabled={!recognition.text}
+                      aria-label="Limpar todo o texto"
+                    >
+                      Limpar tudo
+                    </Btn>
+                  </div>
+                </div>
               </div>
             )}
           </div>
@@ -361,11 +410,12 @@ export function Client() {
 
           {/* O CTA principal some no modo tela cheia (use "Restaurar" para voltar). */}
           {!fullscreen && (
-            <div className="grid place-items-center">
+            <div className="grid place-items-stretch sm:place-items-center">
               <StartConversionBtn
                 active={recording}
-                elapsed="00:12"
+                elapsed={fmtElapsed(elapsed)}
                 onClick={toggleRecording}
+                className="w-full sm:w-auto"
               />
             </div>
           )}

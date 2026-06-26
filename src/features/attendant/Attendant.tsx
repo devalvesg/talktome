@@ -86,9 +86,9 @@ export function Attendant() {
         </Btn>
       </TopBar>
 
-      <main className="mx-auto grid w-full max-w-7xl flex-1 gap-5 p-5 lg:grid-cols-[1fr_340px]">
+      <main className="mx-auto grid w-full max-w-7xl flex-1 gap-5 p-4 sm:p-5 lg:grid-cols-[1fr_340px]">
         {/* Coluna principal */}
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-col gap-5 lg:self-start">
           <Transcription active={state.clientRecording} meta={state.clientRecording ? 'Recebendo…' : 'PT-BR · 98%'}>
             {state.clientRecording
               ? state.librasText && state.librasText.length > 0
@@ -145,18 +145,20 @@ export function Attendant() {
                 disabled={!avatarReady}
               />
             </div>
-            <Btn type="submit" icon="send" disabled={!avatarReady}>
+            <Btn type="submit" icon="send" className="shrink-0" disabled={!avatarReady}>
               Enviar
             </Btn>
           </form>
         </div>
 
-        {/* Histórico */}
-        <aside className="flex flex-col rounded-lg border border-line-subtle bg-surface">
-          <div className="border-b border-line-subtle px-4 py-3">
+        {/* Histórico — teto de altura com rolagem interna para a conversa não
+            esticar a linha do grid (e, com ela, a coluna do input). Fica fixo
+            (sticky) no topo ao rolar a página em telas largas. */}
+        <aside className="flex max-h-[60dvh] flex-col rounded-lg border border-line-subtle bg-surface lg:sticky lg:top-5 lg:max-h-[calc(100dvh-7rem)] lg:self-start">
+          <div className="shrink-0 border-b border-line-subtle px-4 py-3">
             <h2 className="font-head text-[15px] font-semibold text-ink">Histórico</h2>
           </div>
-          <div className="flex-1 overflow-y-auto p-4">
+          <div className="min-h-0 flex-1 overflow-y-auto p-4">
             {state.history.length === 0 ? (
               <EmptyState
                 icon="list"
